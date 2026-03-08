@@ -59,7 +59,7 @@ public class TokenInvalidationService {
         return count != null && count > 0;
     }
 
-    // Call this on a schedule to keep the table lean
+    // Called on a schedule to keep the table lean
     public void cleanupExpiredTokens() {
         jdbcTemplateOne.update(
                 "DELETE FROM invalidated_tokens WHERE expires_at < ?",
@@ -76,4 +76,5 @@ public class TokenInvalidationService {
             throw new RuntimeException("Hashing failed", e);
         }
     }
+
 }
