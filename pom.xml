@@ -5,13 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.1</version>
+<!--		<version>3.1.1</version>-->
+		<version>3.5.11</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.otblabs</groupId>
-	<artifactId>JiinueBoda</artifactId>
+	<artifactId>Jiinue-Boda-Backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>JiinueBoda</name>
+	<name>Jiinue Boda Backend</name>
 	<description>A lending management application </description>
 	<properties>
 		<java.version>17</java.version>
@@ -58,13 +59,13 @@
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>3.9.0</version>
+			<version>4.9.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20180813</version>
+			<version>20231013</version>
 		</dependency>
 
 		<dependency>
