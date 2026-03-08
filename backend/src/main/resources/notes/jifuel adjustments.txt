@@ -1,0 +1,5 @@
+1. Finish profile approval/rejection UI
+2. Finish playstore publishing
+3. Rewrite user onboarding process to make it easily understandable.
+
+

@@ -1,0 +1,64 @@
+BEGINER
+COMPUTATION
+understanding CPUs
+
+MATHEMATICS
+Linear algebra,
+Calculus,
+probability, and information theory
+
+ALGORITHMS
+Supervised learning algorithms.
+linear regression,
+logistic regression,
+decision trees
+Information theory => is a branch of mathematics and electrical engineering that deals with the quantification, storage,and communication of information.
+                      It was pioneered by Claude Shannon in his pioneering 1948 paper "A Mathematical Theory of Communication."
+
+                      Entropy: A measure of the uncertainty or randomness in a random variable or data set. Higher entropy implies higher impurity or uncertainty.
+
+                      Information Gain/Mutual Information: Measures how much "information" a feature provides about the target class, which is used to select optimal splitting features.
+
+                      Kullback-Leibler Divergence: A way to measure the difference between two probability distributions, which can relate to change in entropy after a data split.
+
+                      Data Compression: Finding efficient encodings to represent data, which is analogous to finding succinct decision tree representations.
+
+k-nearest neighbors. (used to classify new data points into existing clusters)
+
+Unsupervised learning algorithms.
+k-means clustering (Applied to identify discrete groups of data points)
+descending dimension algorithms.
+
+VISUALIZATION
+makes for quick and easy storytelling.
+Graphs,
+Scatter plots,
+Box plots
+
+NOTE
+The less informed your audience is, the more important it is to
+visualize your findings. Conversely, if your audience is knowledgeable about
+the topic, additional details and technical terms can be used to supplement
+visual elements.
+
+ADVANCE
+BIG DATA
+Petabytes qualify as big data.
+(1,024 terabytes, 1,048,576 gigabytes, or 1,125,899,906,842,624 bytes)
+(if each row is roughly 1 kilobyte. a petabyte of storage could potentially hold around 1 trillion (1,000,000,000,000) rows.)
+
+scrubbing: The process of refining your dataset before building your model.
+
+COMPUTATION
+understanding GPUS and TPUs
+
+ALGORITHMS
+Markov models,
+support vector machines
+multinomial logistic regression,
+Q-learning
+ensemble modeling. {Combines algorithms and statistical techniques to create a unified model}
+Neural networks  {Automatic calculus for back-propagation/gradient descent.}
+
+
+

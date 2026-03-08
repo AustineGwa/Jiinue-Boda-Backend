@@ -1,0 +1,4 @@
+ connect to ubuntu desktop via windows vnc
+ url  - vnc://198.199.87.183:5900
+ root -p EHUlmj8C
+ user -p HNYbOjKd

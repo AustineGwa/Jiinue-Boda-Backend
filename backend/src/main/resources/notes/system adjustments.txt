@@ -1,0 +1,26 @@
+(top level nav)
+1.dashboard
+2.accounting
+3.registry
+4.loaning
+5.reports
+
+daily collection rate daile (collected / expected)
+monthly collection rate daile (collected / expected)
+PAR (portfolio at risk) ->  outstanding loan balance /outstanding loan arears
+
+loan profile
+disburesd
+loans to date
+outstanding loan arreas
+
+GROWS
+outstanding loan balance = (loans + interest + charges) - loans repaid
+calculating PAR => (total arrears/outstanding balance) * 100 => show numbers and percentages
+
+
+NET (gross without interest)
+outstanding loan balance = (loans + interest + charges) - loans repaid
+calculating PAR => (total arrears/outstanding balance) * 100 => show numbers and percentages
+
+

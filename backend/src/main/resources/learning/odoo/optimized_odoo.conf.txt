@@ -1,0 +1,26 @@
+-8vcpus , 16gb ram , 360 gb storage
+[options]
+; Worker and Performance Tuning
+workers = 14
+max_cron_threads = 1
+
+; Memory Limits (in bytes)
+limit_memory_soft = 2147483648      ; 2GB soft limit
+limit_memory_hard = 4294967296      ; 4GB hard limit
+
+; Request Limits
+limit_request = 8192                ; max requests per worker before recycling
+limit_time_cpu = 600                ; CPU time per request (in seconds)
+limit_time_real = 1200              ; Real time (in seconds) before timeout
+
+; Logging (optional but useful)
+logfile = /var/log/odoo/odoo.log
+log_level = info
+
+; Database
+db_host = False
+db_port = False
+db_user = odoo
+db_password = your_db_password
+
+; Add any other required config values below

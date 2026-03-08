@@ -1,0 +1,61 @@
+Software name Jiinue boda by pikipata.
+this is a loan management software
+
+technology used
+database mysql
+API -java-springboot
+frontend - react, nextjs and react native
+hosting - cloud via digital ocean
+
+
+How it works
+
+    a.) loan request and disbursement
+
+1. boda boda rider , who wants a loan makes a visit to the workshop with their bike and original logbook.
+2(i) if the clients,boda boda stage already exists in the system, loan officers who already have accounts in the system create for them an account,
+ take an entry of their asset (motorcycle) and send them to a valuer. (within the workshop).
+2 (ii) if the boda boda stage is not yet existing, a stage mapping by our agent is done where the agent visits the stage to confirm it exists and the client is a valid member. the chairman and secretary in the stage has to be consulted
+
+3. the valuer has a checklist form where he uses to value the approximate value of the bike.fills the form and takes
+pictures of all the relevant parts of the bike (atleast 6) then forwards all these to the loan officer.
+
+4. upon successfull validation,the client id given a hard copy of the loan agreement they read together with the loan officer and once agreed they both sign ,
+and scan a digital copy.
+the loan officer continues to insert the loan details and the agrreement to the system.
+
+    private int loanPrincipal;
+    private int batteryAmount;
+    private int loanTerm;
+    private String loanPurpose;
+    private String guarantor1Phone;
+    private String guarantor2Phone;
+    private int clientAsset;
+    private MultipartFile loanAgreementForm;
+
+5. upon entry the loan goes to approver 1 (supervisor admin) that checks that the loan is well entered
+and all data is well captured and that the client meets the client meets the minimum requirements.
+
+6. after approver 1 approves it then goes to approver 2 (admin and final approver). he/she majorly checks the validity of the amount and the ability of the client to pay.
+ if they decline the loan is pushed back to approver 1 for restructure or error correction if they approve the system cron picks this loan in queue and automatically disburse the amount to the users mpesa account.
+
+8. upon disbursement the client gets a message confirmation of the money recieved and how to pay on a daily.
+
+the daily amount is calculated by the system (loan total)/days taken
+
+9. days range between 30 (1 month) and 120 (4 months).
+
+ B) client payments
+
+ 1. the client payment and rconciliations are all automated.
+ 2. the client is given his unique account and our mpesa paybill number.
+ 3. when they pay to mpesa we get an IPN (Instant payment Notification) from mpesa to our system via daraja platform.
+ 4. our system adds this payment to their running payments and computes a running balance for them automatically untill the last day where they get their full loan statement and payment details.
+ 5. the system is also able to detect unpaid accounts and missing transactions.
+
+ c) Admin
+ loan manager view -> view all active accounts and their running balances.
+ reports -> general analytics, chats reports and growth focasting.
+ accounting and HR  -> business and employees general view.
+ defaults and non performing accounts
+

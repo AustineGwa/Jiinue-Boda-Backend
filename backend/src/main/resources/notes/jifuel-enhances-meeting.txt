@@ -1,0 +1,5 @@
+1. show loan with account of the lonee.
+2. fix duplicate sms on loan disbursements.
+3. Request failing at station.
+4. App crushing on loan request for some users. (0758669562)
+5.

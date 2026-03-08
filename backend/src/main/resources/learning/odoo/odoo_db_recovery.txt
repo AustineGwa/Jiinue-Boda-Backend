@@ -1,0 +1,21 @@
+--unzip file
+unzip odoo_backup.zip -d odoo_restore
+--create new db
+CREATE DATABASE reliableFoods_2025_07_08_08 WITH ENCODING 'UTF8' TEMPLATE template0;
+
+sudo -u postgres createdb reliablefoods_2025_07_08_08 --owner=odoo
+--restore sql dump
+psql -U postgres -d reliablefoods_2025_07_08_08 < /tmp/odoo_restore/dump.sql
+sudo -u postgres psql reliablefoods_2025_07_08_08 < /tmp/odoo_restore/dump.sql
+
+--
+--filestore
+    --create dir
+    mkdir -p /home/odoo/.local/share/Odoo/filestore/reliableFoods_2025_07_08_08
+    --move files to dir
+    mv /tmp/odoo_restore/filestore/* /home/odoo/.local/share/Odoo/reliableFoods_2025_07_08_08/
+
+
+
+mv /tmp/odoo_restore/filestore/* /home/odoo/.local/share/Odoo/filestore/reliableFoods_2025_07_08_08/
+SELECT * FROM  `groups` ORDER BY created_at DESC

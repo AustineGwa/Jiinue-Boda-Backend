@@ -1,0 +1,69 @@
+kill program on port => lsof -i:port
+
+copy files to server
+scp -r /path/to/my/files root@0.0.0.0:/path/on/remote/droplet
+
+sql file path from root
+/projects/fintech/src/main/resources/static/database/v1/fintechV1.sql
+
+/*
+    const targetData = {
+      annual: {
+        byDecember: 84000000,
+        principal: 130000000,
+        totalClients: 4800,
+        firstTimers: 1700
+      },
+      current: {
+        principal: 42000000,
+        totalClients: 1551,
+        firstTimers: 481
+      }
+    };
+
+ */
+
+// Frequent send money accounts
+// jiinue petty cash number = 254703580212
+// brayo main => 254724289174
+// gillian => 254794134502
+// matha main => 254728258349
+// gwaza main => 254718728894
+// Barry Wakili => 254713144086
+// vev => 254715193676
+// peter Ekirapa => 254723476981
+// charles designer => 254746456313
+// Gedion ngeno => 254722939947
+// Wilson ogutu => 254703387640
+account => 'kcb'
+paybill => 522522
+account number => '1298739764'
+
+	private void sendToInvestor () {
+//         i&m bank 0010_418637_6350
+//		   mpesaTransactionsService.payToInvestorPaybill(50_000,"880100","1329880015","quarterly Investor Earnings"); //mama njoro
+//		   mpesaTransactionsService.payToPaybill(180000,"529901","1152058393002","kingdom account settlement"); //kingdom bank
+//		   mpesaTransactionsService.payToInvestorPaybill(10000,"880100","4430650017","partial march wage"); //brayo
+//		   mpesaTransactionsService.payToPaybill(13000,"247247","1480167297019","server backup storage"); //gwaza equity
+//		   mpesaTransactionsService.payToInvestorPaybill(16700,"303030","2038005785","Sogomo Monthly interest"); //sogomo
+//		   mpesaTransactionsService.payToInvestorPaybill(1178,"542542","000296","Daily Investor payment");  //sarah
+//		   mpesaTransactionsService.payToInvestorPaybill(16700,"303030","2053699254","Monthly Investor earning"); //mama cliff
+
+	}
+
+#check available users
+#SELECT user, host FROM mysql.user;
+#create a new user
+#CREATE USER 'username'@'ip_address' IDENTIFIED BY 'password';
+#give the user priviledges
+#GRANT SELECT ON db.table TO 'user'@'ip';
+# Show a users priviledges
+#SHOW GRANTS FOR 'analyst1'@'%';
+#change the user passwords
+#ALTER USER 'username'@'ip' IDENTIFIED BY 'password';
+#check active user sesions
+#SELECT id, user, host, db, command, time FROM information_schema.processlist;
+#kill all active sesions
+#KILL USER 'username'
+
+

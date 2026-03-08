@@ -1,0 +1,104 @@
+1. Odoo-Level Tweaks
+✅ proxy_mode = True
+Already mentioned — but crucial.
+
+✅ Activate caching (if not already)
+Odoo uses QWeb templates and ORM that benefit from caching. You can speed up things by:
+
+Using ir.model.data and computed fields wisely (avoid unnecessary recomputations).
+
+Memoizing or caching expensive Python functions with @tools.ormcache() (be careful with invalidation though).
+
+🔁 Minimize modules
+Remove unused modules — especially third-party apps. They often introduce bloat.
+
+Disable debug mode in production.
+
+✅ Run in --no-database-list mode
+If you only have one DB and don't want Odoo listing all databases:
+
+ini
+Copy
+Edit
+list_db = False
+This blocks DB enumeration (security) and reduces overhead on each request.
+
+🧠 2. PostgreSQL Tuning (HUGE impact!)
+Odoo is heavily reliant on PostgreSQL. Default configs are conservative.
+
+Edit your postgresql.conf (usually in /etc/postgresql/XX/main/):
+
+conf
+Copy
+Edit
+shared_buffers = 4GB               # ~25% of total RAM
+work_mem = 64MB                    # memory per operation (adjust for large queries)
+effective_cache_size = 8GB         # 50%–75% of RAM
+maintenance_work_mem = 512MB       # for vacuum, create index etc.
+wal_buffers = 16MB
+max_connections = 100
+Restart PostgreSQL after tuning.
+
+Also install pg_stat_statements to identify slow queries:
+
+bash
+Copy
+Edit
+sudo -u postgres psql -c "CREATE EXTENSION pg_stat_statements;"
+Then monitor with:
+
+sql
+Copy
+Edit
+SELECT * FROM pg_stat_statements ORDER BY total_time DESC LIMIT 10;
+🌐 3. Nginx Enhancements
+✅ Enable Gzip:
+nginx
+Copy
+Edit
+gzip on;
+gzip_min_length 1000;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+✅ Enable HTTP/2 (for faster asset loading)
+nginx
+Copy
+Edit
+listen 443 ssl http2;
+🖥️ 4. System-Level & Python Tuning
+✅ Enable swap (just in case)
+bash
+Copy
+Edit
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+Add to /etc/fstab:
+
+bash
+Copy
+Edit
+/swapfile none swap sw 0 0
+✅ Use uWSGI or Gunicorn (advanced)
+Instead of odoo-bin directly, consider using Gunicorn for better memory management. Odoo supports it via WSGI (needs setup).
+
+📊 5. Monitoring & Bottleneck Detection
+🧰 Tools you should install:
+htop – for CPU/RAM load
+
+iotop – disk I/O issues
+
+glances – all-in-one system monitor
+
+netdata – real-time web-based dashboard
+
+pgBadger – PostgreSQL slow query analyzer
+
+Odoo Enterprise users can also access performance reports.
+
+🚀 Bonus: Frontend Optimization
+Enable assets minification and lazy loading of widgets
+
+Offload media (images, videos) to CDN or object storage (e.g., DigitalOcean Spaces, AWS S3)
+
+If you're using custom themes, keep them lightweight — fancy UI can cause slowdowns

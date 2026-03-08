@@ -1,0 +1,34 @@
+//class notes
+    /*
+    1. confirm a user membership
+    userId
+    groupId
+
+    //loan application requirements
+    group membership
+    originalId
+    original logbook
+    krapin
+    valuationform
+    driversLicence
+    passport photo
+    guarantor ID
+    daily repayment schedule
+    loan agreement
+
+
+    applicants personal details (captured while onboarding)
+    fullname
+    id number
+    dob
+    gender
+    motorcycle registration (number plate)
+    phone number
+    group details
+
+
+
+
+    applicants loan details  (captured at application level)
+    amount applied, payment period, daily repayment, loan purpose
+     */

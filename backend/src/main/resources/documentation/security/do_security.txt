@@ -1,0 +1,7 @@
+1. Disable ssh login with password and only use ssh keys.
+>ssh-keygen -t rsa -b 4096 -C
+2.Firewall allow http 80, reject all the rest
+>there are 2 different firewals in DO. 1. ON UBUNTU OS and 2. on DO interface
+3.setup a vpc and manage a single firewall rule
+4.service auditing
+>sudo ss -plunt => check running ports

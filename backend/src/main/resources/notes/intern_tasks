@@ -1,0 +1,29 @@
+Microlending operations Data tasks.
+
+
+
+key analyses:
+
+1. Portfolio Performance Analysis:
+- Calculate key metrics like average loan size, repayment rates, and default rates
+- Analyze loan disbursement patterns across different time periods (daily, weekly, monthly)
+- Track on-time vs. late payments
+- Calculate portfolio at risk (PAR) ratios for different time periods
+
+2. Customer Segmentation:
+- Group borrowers by loan size, purpose, or geography
+- Analyze repayment behavior across different segments
+- Identify characteristics of high-performing vs. struggling borrowers
+- Calculate repeat borrower rates
+
+3. Operational Efficiency:
+- Calculate average time between loan application and disbursement
+- Track transaction processing times
+- Analyze peak transaction periods
+- Identify any bottlenecks in the lending process
+
+4. Financial Analysis:
+- Calculate interest income and fee revenue trends
+- Track operating costs per loan
+- Analyze cash flow patterns
+- Calculate portfolio yield

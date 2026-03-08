@@ -1,0 +1,68 @@
+//odoo server
+1. upload the installer to server
+2. run installer dpkg installer.dep
+3. odoo runs on port 8069 as a service
+
+enable pdf reports
+install wkhtmltopdf on os
+[options]
+...
+wkhtmltopdf_path = /usr/local/bin/wkhtmltopdf
+
+downgrade to version 12 for reports to continue working with templates
+12.5 version
+download link
+wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
+install
+sudo apt install -y ./wkhtmltox_0.12.5-1.bionic_amd64.deb
+
+download libs11
+wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+install libs11
+sudo dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+
+
+
+//enable postgress on remote access
+Edit the postgresql.conf file to allow non-local connections. (listen '*')
+Modify the pg_hba.conf file to specify which hosts are allowed to connect. (host    all    all    0.0.0.0/0    md5)
+
+This line means:
+
+host: This rule applies to TCP/IP connections
+all: Applies to all databases
+all: Applies to all users
+0.0.0.0/0: Allows connections from any IP address
+md5: Requires MD5-encrypted password authentication
+
+
+Configure your firewall to allow incoming connections on PostgreSQL's port (usually 5432).
+Potentially set up SSL for secure remote connections.
+
+connect to postgress on terminal
+sudo -u postgres psql
+
+create new remote user or edit default password
+ALTER USER postgres WITH PASSWORD 'your_secure_password';
+
+On Linux systems:
+/etc/postgresql/<version>/main/
+/var/lib/postgresql/<version>/main/
+
+
+###3rd party apps
+1. download the zip file for odoo 3rd party app
+2. extract and upload to odoo server
+3. move the content to odoo addons folder
+ sudo cp -r <addon_name> /usr/lib/python3/dist-packages/odoo/addons/custom-addons
+4.add the custom addons folder to odoo config under (/etc/odoo/odoo.conf)
+ addons_path = /usr/lib/python3/dist-packages/odoo/addons,/usr/lib/python3/dist-packages/odoo/addons/custom-addons
+5.restart odoo server (sudo systemctl restart odoo)
+
+
+
+
+ sudo cp -r report_pdf_options /usr/lib/python3/dist-packages/odoo/addons
+
+
+

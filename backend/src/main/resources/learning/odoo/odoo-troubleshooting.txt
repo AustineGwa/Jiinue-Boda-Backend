@@ -1,0 +1,44 @@
+Database performance issues:
+
+The Odoo database (PostgreSQL) might be experiencing slowdowns due to lack of indexing, fragmentation, or a growing dataset
+Long-running queries might be blocking other operations
+
+
+Disk I/O bottlenecks:
+
+Slow disk access or high disk I/O wait times can cause application slowness even with low CPU/RAM usage
+Check if your disk is becoming full or if there are I/O wait times in your monitoring
+
+
+Network latency:
+
+If Odoo components are distributed across different servers, network issues could cause slowdowns
+Check for connectivity issues between application and database servers
+
+
+Specific Odoo processes:
+
+Some operations like report generation, PDF creation, or heavy calculations might be single-threaded
+Large batch operations might be consuming specific resources
+
+
+Connection pooling:
+
+Too many open database connections might be causing contention
+
+
+
+To diagnose the issue further, I recommend:
+
+Check PostgreSQL performance:
+CopySELECT * FROM pg_stat_activity WHERE state = 'active';
+
+Look at disk I/O stats:
+Copyiostat -x 1
+
+Examine Odoo logs for errors or long-running operations:
+Copytail -f /var/log/odoo/odoo-server.log
+
+Check which specific Odoo operations are slow - is it all operations or just certain screens/reports?
+
+Would you be able to share more information about which specific Odoo operations are running slowly or any error messages you're seeing in the logs?
