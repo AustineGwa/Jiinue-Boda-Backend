@@ -104,7 +104,7 @@ public class AuthenticationController {
                 case SUCCESS -> {
                     String token = JWT.create()
                             .withSubject(otpRequest.getUserIdentifier())
-//                            .withClaim("roles", List.of("ROLE_ADMIN"))  // embed roles here
+                            .withClaim("roles", List.of("ROLE_Client").toString())
                             .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                             .sign(HMAC512(SecurityConstants.SECRET.getBytes()));
 

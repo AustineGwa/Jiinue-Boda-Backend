@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -110,18 +111,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private Collection<? extends GrantedAuthority> getUserRoles(String token) {
 
         DecodedJWT decoded = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()))
-        .build()
-        .verify(token);
+                .build()
+                .verify(token);
 
-        String username = decoded.getSubject();
+        Claim rolesClaim = decoded.getClaim("roles");
 
-        List<SimpleGrantedAuthority> authorities = decoded.getClaim("roles")
-                .asList(String.class)
-                .stream()
+//        // Guard against tokens issued before roles claim was added
+//        if (rolesClaim == null || rolesClaim.isNull() || rolesClaim.isMissing()) {
+//            return new ArrayList<>();
+//        }
+
+        List<String> roles = rolesClaim.asList(String.class);
+        if (roles == null) {
+            return new ArrayList<>();
+        }
+
+        return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-
-        return new ArrayList<>();
     }
 
     private void writeErrorResponse(HttpServletResponse res, ErrorResponse response) {
