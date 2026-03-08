@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.tracking.activations;
+package com.otblabs.jiinueboda.assets.tracking.activations;
 
 import com.otblabs.jiinueboda.sms.SmsService;
 import org.springframework.stereotype.Service;

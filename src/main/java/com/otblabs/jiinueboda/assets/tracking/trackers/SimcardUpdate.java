@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.tracking.trackers;
+package com.otblabs.jiinueboda.assets.tracking.trackers;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

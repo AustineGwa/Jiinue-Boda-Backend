@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 public class OnlineAssetValuation {
     private Integer id;
     private Integer assetId;
-    private String  inspector;
-    private LocalDate inspectionDate;
+    private int  technicianId;
 
     // Section 2 – Wiring & GPS
     private Integer wiringHarness;

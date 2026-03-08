@@ -1,7 +1,9 @@
 package com.otblabs.jiinueboda.assets.valuation.online.models;
 
 import jakarta.validation.constraints.*;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,13 +24,8 @@ public class ValuationRequest {
 
     @NotNull
     private Integer assetId;
+    private int technicianId;
 
-    @NotBlank(message = "inspector is required")
-    @Size(max = 100)
-    private String inspector;
-
-    @NotNull
-    private LocalDate inspectionDate;
 
     // ── Section 2 – Wiring & GPS (0–3)
     @Min(0) @Max(3) private Integer wiringHarness;

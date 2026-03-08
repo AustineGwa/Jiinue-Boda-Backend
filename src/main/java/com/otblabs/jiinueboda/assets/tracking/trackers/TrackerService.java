@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.tracking.trackers;
+package com.otblabs.jiinueboda.assets.tracking.trackers;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

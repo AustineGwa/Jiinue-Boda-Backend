@@ -109,7 +109,7 @@ public class OnlineValuationService {
     private int insert(OnlineAssetValuation v) {
         String sql = """
             INSERT INTO asset_valuations (
-                asset_id, inspector, inspection_date,
+                asset_id, inspector,
                 wiring_harness, battery_health, charging_system,
                 wiring_neatness, electrical_func, gps_feasibility, wiring_score,
                 front_tyre, rear_tyre, tyre_score,
@@ -118,7 +118,7 @@ public class OnlineValuationService {
                 acc_side_mirrors, acc_crash_bars, acc_item_3, acc_item_4, acc_item_5, accessory_score,
                 total_score, grade, remarks
             ) VALUES (
-                ?, ?, ?,
+                 ?, ?,
                 ?, ?, ?, ?, ?, ?, ?,
                 ?, ?, ?,
                 ?, ?, ?, ?, ?, ?,
@@ -133,8 +133,7 @@ public class OnlineValuationService {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int i = 1;
             ps.setInt   (i++, v.getAssetId());
-            ps.setString(i++, v.getInspector());
-            ps.setObject(i++, v.getInspectionDate());
+            ps.setInt(i++, v.getTechnicianId());
 
             // Section 2
             ps.setObject(i++, v.getWiringHarness());
@@ -182,9 +181,7 @@ public class OnlineValuationService {
             OnlineAssetValuation v = new OnlineAssetValuation();
             v.setId             (rs.getInt("id"));
             v.setAssetId        (rs.getInt("asset_id"));
-            v.setInspector      (rs.getString("inspector"));
-            v.setInspectionDate (rs.getDate("inspection_date").toLocalDate());
-
+            v.setTechnicianId      (rs.getInt("inspector"));
             v.setWiringHarness  (getNullableInt(rs, "wiring_harness"));
             v.setBatteryHealth  (getNullableInt(rs, "battery_health"));
             v.setChargingSystem (getNullableInt(rs, "charging_system"));
@@ -230,8 +227,7 @@ public class OnlineValuationService {
     private OnlineAssetValuation mapRequestToModel(ValuationRequest req) {
         OnlineAssetValuation v = new OnlineAssetValuation();
         v.setAssetId        (req.getAssetId());
-        v.setInspector      (req.getInspector());
-        v.setInspectionDate (req.getInspectionDate());
+        v.setTechnicianId   (req.getTechnicianId());
         v.setWiringHarness  (req.getWiringHarness());
         v.setBatteryHealth  (req.getBatteryHealth());
         v.setChargingSystem (req.getChargingSystem());

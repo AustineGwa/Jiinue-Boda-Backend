@@ -22,8 +22,14 @@ public class OnlineValuationController {
 
     @PostMapping("/create-new-valuation")
     public ResponseEntity<OnlineAssetValuation> create(@Valid @RequestBody ValuationRequest request) {
-        OnlineAssetValuation saved = service.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        try{
+            OnlineAssetValuation saved = service.create(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+
     }
 
 
