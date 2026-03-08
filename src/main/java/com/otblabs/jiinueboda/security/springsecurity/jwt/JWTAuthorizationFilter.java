@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.otblabs.jiinueboda.auth.TokenInvalidationService;
@@ -18,6 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +29,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UserDetailsService userDetailsService;
@@ -98,7 +104,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             throw new UnauthorizedException();
         }
 
-        return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+        return new UsernamePasswordAuthenticationToken(username, null, getUserRoles(token));
+    }
+
+    private Collection<? extends GrantedAuthority> getUserRoles(String token) {
+
+        DecodedJWT decoded = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()))
+        .build()
+        .verify(token);
+
+        String username = decoded.getSubject();
+
+        List<SimpleGrantedAuthority> authorities = decoded.getClaim("roles")
+                .asList(String.class)
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
+        return new ArrayList<>();
     }
 
     private void writeErrorResponse(HttpServletResponse res, ErrorResponse response) {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -103,6 +104,7 @@ public class AuthenticationController {
                 case SUCCESS -> {
                     String token = JWT.create()
                             .withSubject(otpRequest.getUserIdentifier())
+//                            .withClaim("roles", List.of("ROLE_ADMIN"))  // embed roles here
                             .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
                             .sign(HMAC512(SecurityConstants.SECRET.getBytes()));
 
