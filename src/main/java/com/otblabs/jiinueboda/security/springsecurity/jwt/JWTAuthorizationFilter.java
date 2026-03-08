@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UserDetailsService userDetailsService;
@@ -77,19 +78,27 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse res) {
-        String bearerToken = request.getHeader(SecurityConstants.HEADER_STRING);
-        String user = null;
 
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse res) {
+
+        String bearerToken = request.getHeader(SecurityConstants.HEADER_STRING);
         String token = bearerToken.replace(SecurityConstants.TOKEN_PREFIX, "").trim();
+
         if (token.isEmpty()) {
             throw new UnauthorizedException();
-        } else
-            user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes())).build()
-                    .verify(token).getSubject();
+        }
 
-        UserDetails details = this.userDetailsService.loadUserByUsername(user);
-        return new UsernamePasswordAuthenticationToken(details, "", details.getAuthorities());
+        // verify JWT signature and extract the subject
+        String username = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()))
+                .build()
+                .verify(token)
+                .getSubject();
+
+        if (username == null) {
+            throw new UnauthorizedException();
+        }
+
+        return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
     }
 
     private void writeErrorResponse(HttpServletResponse res, ErrorResponse response) {
