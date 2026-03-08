@@ -57,8 +57,7 @@ public class AuthenticationController {
             // Password OK — fire OTP
             twoFactorService.generateAndSendOtp(credentials.getUser(), systemUser.getPhone());
 
-            loginAuditService.saveAudit(request, credentials.getUser(),
-                    systemUser.getId(), "OTP_SENT", null, sessionId);
+            loginAuditService.saveAudit(request, credentials.getUser(),systemUser.getId(), "OTP_SENT", null, sessionId);
 
             return ResponseEntity.ok(
                     new LoginResponse<>("OTP sent to your registered phone number", null, true, sessionId)
