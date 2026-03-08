@@ -29,6 +29,7 @@ public class AuthenticationController {
     private final TwoFactorService twoFactorService;
     private final LoginAuditService loginAuditService;
     private final ExceptionsHandlerService exceptionsHandlerService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse<Object>> adminLogin(
@@ -129,18 +130,8 @@ public class AuthenticationController {
         String token = header.replace("Bearer ", "");
 
         try {
-            DecodedJWT decoded = JWT.require(HMAC512(SecurityConstants.SECRET.getBytes()))
-                    .build()
-                    .verify(token);
 
-            tokenInvalidationService.invalidateToken(
-                    token,
-                    decoded.getSubject(),  // who is logging out
-                    "User logout",
-                    decoded.getExpiresAt()
-            );
-
-            return ResponseEntity.ok("Logged out successfully");
+            return ResponseEntity.ok(authenticationService.logoutUser(token));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Invalid token");
@@ -148,31 +139,15 @@ public class AuthenticationController {
     }
 
 
-//    @PostMapping("/admin/invalidate-user-sessions/{userId}")
-//    public ResponseEntity<String> invalidateUserSessions(
-//            @PathVariable Long userId,
-//            @RequestParam String reason) {
-//
-//        // Fetch all active token hashes for this user from login_audits
-//        List<Map<String, Object>> activeSessions = jdbcTemplate.queryForList(
-//                """
-//                SELECT jwt_token_hash, attempted_at FROM login_audits
-//                WHERE user_id = ? AND status = 'SUCCESS' AND jwt_token_hash IS NOT NULL
-//                AND attempted_at > ?
-//                """,
-//                userId,
-//                LocalDateTime.now().minusSeconds(SecurityConstants.EXPIRATION_TIME / 1000)
-//        );
-//
-//        activeSessions.forEach(session -> {
-//            tokenInvalidationService.invalidateByHash(
-//                    (String) session.get("jwt_token_hash"),
-//                    "admin",
-//                    reason,
-//                    LocalDateTime.now().plusSeconds(SecurityConstants.EXPIRATION_TIME / 1000)
-//            );
-//        });
-//
-//        return ResponseEntity.ok("Invalidated " + activeSessions.size() + " session(s)");
-//    }
+    @PostMapping("/admin/invalidate-user-sessions/{userId}")
+    public ResponseEntity<String> invalidateUserSessions(
+            @PathVariable int userId,
+            @RequestParam String reason) {
+
+        try {
+            return ResponseEntity.ok(authenticationService.invalidateAllUserSessions(userId,reason));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
