@@ -1,5 +1,6 @@
 package com.otblabs.jiinueboda.security.springsecurity;
 
+import com.otblabs.jiinueboda.auth.TokenInvalidationService;
 import com.otblabs.jiinueboda.security.springsecurity.jwt.JWTAuthenticationFilter;
 import com.otblabs.jiinueboda.security.springsecurity.jwt.JWTAuthorizationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -24,7 +25,13 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  @Bean
+  private final TokenInvalidationService tokenValidatioService;
+
+    public SecurityConfig(TokenInvalidationService tokenValidatioService) {
+        this.tokenValidatioService = tokenValidatioService;
+    }
+
+    @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
           throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
@@ -55,7 +62,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated())
             .sessionManagement(ses -> ses.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilter(new JWTAuthenticationFilter(authenticationManager))
-            .addFilterAfter(new JWTAuthorizationFilter(userDetailsService, authenticationManager), JWTAuthenticationFilter.class);
+            .addFilterAfter(new JWTAuthorizationFilter(userDetailsService, authenticationManager,tokenValidatioService), JWTAuthenticationFilter.class);
 
     return http.build();
   }

@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.otblabs.jiinueboda.auth.TokenInvalidationService;
 import com.otblabs.jiinueboda.security.SecurityConstants;
 import com.otblabs.jiinueboda.utility.generic.exception.ErrorResponse;
 import com.otblabs.jiinueboda.utility.generic.exception.UnauthorizedException;
@@ -27,10 +28,14 @@ import java.io.PrintWriter;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UserDetailsService userDetailsService;
+    private TokenInvalidationService tokenInvalidationService;
 
-    public JWTAuthorizationFilter(UserDetailsService userDetailsService, AuthenticationManager authManager) {
+    public JWTAuthorizationFilter(UserDetailsService userDetailsService,
+                                  AuthenticationManager authManager,
+                                  TokenInvalidationService tokenInvalidationService) {
         super(authManager);
         this.userDetailsService = userDetailsService;
+        this.tokenInvalidationService = tokenInvalidationService;
     }
 
     @Override
@@ -41,6 +46,14 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(req, res);
             return;
         }
+
+        // check blacklist before anything else
+        String rawToken = header.replace(SecurityConstants.TOKEN_PREFIX, "").trim();
+        if (tokenInvalidationService.isTokenInvalidated(rawToken)) {
+            writeErrorResponse(res, new ErrorResponse(401, "Session has been invalidated. Please login again."));
+            return;
+        }
+
         UsernamePasswordAuthenticationToken authentication = null;
 
         try {
@@ -62,37 +75,31 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(req, res);
         } else
             return;
-
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse res) {
-
         String bearerToken = request.getHeader(SecurityConstants.HEADER_STRING);
         String user = null;
 
         String token = bearerToken.replace(SecurityConstants.TOKEN_PREFIX, "").trim();
         if (token.isEmpty()) {
             throw new UnauthorizedException();
-
         } else
             user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes())).build()
                     .verify(token).getSubject();
 
         UserDetails details = this.userDetailsService.loadUserByUsername(user);
         return new UsernamePasswordAuthenticationToken(details, "", details.getAuthorities());
-
     }
 
     private void writeErrorResponse(HttpServletResponse res, ErrorResponse response) {
         try {
-            // e.printStackTrace();
             res.setStatus(response.getCode());
             PrintWriter out = res.getWriter();
             res.setContentType("application/json");
             res.setCharacterEncoding("UTF-8");
             out.print(new ObjectMapper().writeValueAsString(response));
             out.flush();
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
