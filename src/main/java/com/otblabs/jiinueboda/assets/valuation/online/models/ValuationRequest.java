@@ -20,17 +20,17 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class ValuationRequest {
 
-    @NotNull(message = "asset_id is required")
+    @NotNull
     private Integer assetId;
 
     @NotBlank(message = "inspector is required")
     @Size(max = 100)
     private String inspector;
 
-    @NotNull(message = "inspection_date is required")
+    @NotNull
     private LocalDate inspectionDate;
 
-    // ── Section 2 – Wiring & GPS (0–3) ──────────────────────
+    // ── Section 2 – Wiring & GPS (0–3)
     @Min(0) @Max(3) private Integer wiringHarness;
     @Min(0) @Max(3) private Integer batteryHealth;
     @Min(0) @Max(3) private Integer chargingSystem;
@@ -38,18 +38,18 @@ public class ValuationRequest {
     @Min(0) @Max(3) private Integer electricalFunc;
     @Min(0) @Max(3) private Integer gpsFeasibility;
 
-    // ── Section 3 – Tyres (0–3) ─────────────────────────────
+    // ── Section 3 – Tyres (0–3)
     @Min(0) @Max(3) private Integer frontTyre;
     @Min(0) @Max(3) private Integer rearTyre;
 
-    // ── Section 4 – Body & Frame (0–3) ──────────────────────
+    // ── Section 4 – Body & Frame (0–3)
     @Min(0) @Max(3) private Integer frameAlignment;
     @Min(0) @Max(3) private Integer fuelTank;
     @Min(0) @Max(3) private Integer bodyPanels;
     @Min(0) @Max(3) private Integer paintCondition;
     @Min(0) @Max(3) private Integer generalAppear;
 
-    // ── Section 5 – Accessories (0–2) ───────────────────────
+    // ── Section 5 – Accessories (0–2)
     @Min(0) @Max(2) private Integer accSideMirrors;
     @Min(0) @Max(2) private Integer accCrashBars;
     @Min(0) @Max(2) private Integer accItem3;
