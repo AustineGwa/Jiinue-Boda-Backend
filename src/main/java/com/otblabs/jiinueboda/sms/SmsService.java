@@ -358,5 +358,10 @@ public class SmsService {
     }
 
 
-
+    public void sendLoginOTPSms(String phoneNumber, String message) throws Exception {
+        ApiMessageDTO apiMessageDTO = new ApiMessageDTO();
+        apiMessageDTO.setReciver(phoneNumber);
+        apiMessageDTO.setMessage(message);
+        smsCore.sendSingleTransactionalSms(apiMessageDTO);
+    }
 }

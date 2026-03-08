@@ -1,16 +1,19 @@
 package com.otblabs.jiinueboda.auth;
 
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
 public class LoginResponse<T> {
-    String token;
-    T user;
+    private String message;
+    private T data;
+    private boolean otpRequired;
+    private String sessionId;
+
+    public LoginResponse(String message, T data) {
+        this.message = message;
+        this.data = data;
+        this.otpRequired = false;
+        this.sessionId = null;
+    }
 }
