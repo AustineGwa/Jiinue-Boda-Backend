@@ -38,7 +38,7 @@ public class SecurityConfig {
             .cors().configurationSource(corsConfigurationSource()).and()
             .authorizeHttpRequests(auth -> auth.requestMatchers(
                             "/auth/login",
-                            "/auth/login/*",
+                            "/auth/verify-otp",
                             "/users/invite/createuser",
                             "/location-services/options",
                             "/groups/wards/*",

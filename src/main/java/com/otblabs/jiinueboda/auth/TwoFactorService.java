@@ -57,7 +57,7 @@ public class TwoFactorService {
         }
 
         Map<String, Object> token = rows.get(0);
-        LocalDateTime expiresAt = ((Timestamp) token.get("expires_at")).toLocalDateTime();
+        LocalDateTime expiresAt = (LocalDateTime) token.get("expires_at");
 
         if (LocalDateTime.now().isAfter(expiresAt)) {
             jdbcTemplateOne.update(
