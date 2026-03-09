@@ -38,6 +38,16 @@ public class AssetsController {
         }
     }
 
+    @PostMapping(value = "/update-asset-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> registerAsset(@ModelAttribute AssetImagesDto assetImagesDto) {
+        try{
+            return ResponseEntity.ok(assetsService.updateAssetImages(assetImagesDto));
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.internalServerError().body(exception.getMessage());
+        }
+    }
+
 
 
     @PostMapping(value = "/valuation/complete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

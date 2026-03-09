@@ -123,7 +123,7 @@ public class AssetsService {
         return clientAsset;
     }
 
-    public String createNewAsset(NewAssetDto assetData, String user) throws Exception{
+    public String createNewAsset(NewAssetDto assetData, String user) throws Exception {
 
         SystemUser systemUser = userService.getByEmailOrPhone(user);
 
@@ -156,22 +156,32 @@ public class AssetsService {
         return "success";
     }
 
-    public String createNewAsset(NewAssetData assetData, String user) throws Exception{
+    public String createNewAsset(NewAssetData assetData, String user) throws Exception {
 
         SystemUser systemUser = userService.getByEmailOrPhone(user);
-
         int assetId = createnewAssetEtry(assetData, systemUser.getId());
 
         fileManagementService.uploadAssetAttachment(assetData.getChargedLogBook(),"ASSET-DOCUMENT",assetId);
+        AssetImagesDto assetImagesDto = new AssetImagesDto();
+        assetImagesDto.setAssetImages(assetData.getAssetImages());
+        assetImagesDto.setAssetId(assetId);
+        updateAssetImages(assetImagesDto);
 
-        assetData.getAssetImages().forEach(assetImage ->{
+       return "success";
+    }
+
+    public String updateAssetImages(AssetImagesDto assetImagesDto) throws Exception {
+
+        assetImagesDto.getAssetImages().forEach(assetImage ->{
             try {
-                fileManagementService.uploadAssetAttachment(assetImage,"ASSET-DOCUMENT-IMAGES",assetId);
+                fileManagementService.uploadAssetAttachment(assetImage,"ASSET-DOCUMENT-IMAGES",assetImagesDto.getAssetId());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
-       return "success";
+
+        return "Images uploaded successfully";
+
     }
 
     public String updateValuationForAsset(ValuationSubmissionData valuationSubmissionData) throws Exception {
