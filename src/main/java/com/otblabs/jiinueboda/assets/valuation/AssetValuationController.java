@@ -1,6 +1,9 @@
 package com.otblabs.jiinueboda.assets.valuation;
 
+import com.otblabs.jiinueboda.assets.AssetsService;
 import com.otblabs.jiinueboda.assets.models.ClientAsset;
+import com.otblabs.jiinueboda.assets.models.PendingAssets;
+import com.otblabs.jiinueboda.assets.valuation.online.OnlineValuationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +14,22 @@ import java.util.List;
 public class AssetValuationController {
 
     private final AssetValuationService assetValuationService;
+    private final AssetsService assetsService;
 
-    public AssetValuationController(AssetValuationService assetValuationService) {
+    public AssetValuationController(AssetValuationService assetValuationService, AssetsService assetsService) {
         this.assetValuationService = assetValuationService;
+        this.assetsService = assetsService;
+    }
+
+    @GetMapping("/pending-valuations/all")
+    ResponseEntity<List<PendingAssets>> getAllAssetsPendingValuation(){
+        try {
+            List<PendingAssets> assetValuation = assetsService.getAllAssetsPendingValuation();
+            return ResponseEntity.ok(assetValuation);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/asset-valuation/{userId}")

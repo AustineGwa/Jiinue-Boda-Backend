@@ -75,7 +75,31 @@ public class AssetsService {
         return jdbcTemplateOne.query(sql,(rs,i)->mapResultToAsset(rs));
     }
 
+    public List<PendingAssets> getAllAssetsPendingValuation() throws Exception{
+        String sql = """
+                SELECT id,user_id, make, model,chassis, engine_number, rating, yom, color,l_plate
+                FROM client_assets
+                WHERE eval_status is null and deleted_at is null
+               
+                """;
 
+        return jdbcTemplateOne.query(sql, (rs,i) -> mapResultSetToRow(rs));
+    }
+
+    private PendingAssets mapResultSetToRow(ResultSet rs) throws SQLException {
+        PendingAssets asset = new PendingAssets();
+        asset.setAssetId(rs.getInt("id"));
+        asset.setUserId(rs.getInt("user_id"));
+        asset.setMake(rs.getString("make"));
+        asset.setModel(rs.getString("model"));
+        asset.setChassis(rs.getString("chassis"));
+        asset.setEngineNumber(rs.getString("engine_number"));
+        asset.setRating(rs.getInt("rating"));
+        asset.setYom(rs.getInt("yom"));
+        asset.setColor(rs.getString("color"));
+        asset.setNumberPlate(rs.getString("l_plate"));
+        return asset;
+    }
 
 
     private ClientAsset mapResultToAsset(ResultSet rs) throws SQLException {
