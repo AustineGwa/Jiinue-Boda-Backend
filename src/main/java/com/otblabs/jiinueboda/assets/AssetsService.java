@@ -77,9 +77,9 @@ public class AssetsService {
 
     public List<PendingAssets> getAllAssetsPendingValuation() throws Exception{
         String sql = """
-                SELECT id,user_id, make, model,chassis, engine_number, rating, yom, color,l_plate
-                FROM client_assets
-                WHERE eval_status is null and deleted_at is null
+                SELECT id,user_id, make, model,chassis, engine_number, rating, yom, color,l_plate,created_at
+                                FROM client_assets
+                                WHERE eval_status is null and deleted_at is null
                
                 """;
 
@@ -98,6 +98,7 @@ public class AssetsService {
         asset.setYom(rs.getInt("yom"));
         asset.setColor(rs.getString("color"));
         asset.setNumberPlate(rs.getString("l_plate"));
+        asset.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         return asset;
     }
 

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,4 +22,5 @@ public class PendingAssets {
    private int yom;
    private String color;
    private String numberPlate;
+   private LocalDateTime createdAt;
 }
