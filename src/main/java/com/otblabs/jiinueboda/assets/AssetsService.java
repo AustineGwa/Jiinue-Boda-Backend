@@ -149,9 +149,15 @@ public class AssetsService {
        return "success";
     }
 
-    public String updateValuationForAsset(ValuationSubmissionData valuationSubmissionData) throws Exception{
+    public String updateValuationForAsset(ValuationSubmissionData valuationSubmissionData) throws Exception {
+
         fileManagementService.uploadValuationForm(valuationSubmissionData.getEvaluationForm(),"EVAL-REPORT", valuationSubmissionData.getAssetId());
-        updateEvalStatusOnAsset(valuationSubmissionData);
+
+        updateEvalStatusOnAsset(
+                valuationSubmissionData.getEvalAssignedTo(),
+                valuationSubmissionData.getAssetId()
+        );
+
         return "success";
     }
 
@@ -169,9 +175,15 @@ public class AssetsService {
     }
 
 
-    private void updateEvalStatusOnAsset(ValuationSubmissionData valuationSubmissionData) throws Exception{
-        String sql = "UPDATE client_assets SET eval_status=1,eval_assigned_to=?,eval_comp_date=? WHERE id=?";
-        jdbcTemplateOne.update(sql,valuationSubmissionData.getEvalAssignedTo(),valuationSubmissionData.getEvalCompletionDateTime(), valuationSubmissionData.getAssetId());
+    public void updateEvalStatusOnAsset(int valuer,int assetId) throws Exception {
+
+        String sql = "UPDATE client_assets SET eval_status=1,eval_assigned_to=?,eval_comp_date=NOW() WHERE id=?";
+
+        jdbcTemplateOne.update(
+                sql,
+                valuer,
+                assetId
+        );
 
     }
 

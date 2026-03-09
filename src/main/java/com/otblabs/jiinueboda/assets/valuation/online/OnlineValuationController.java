@@ -1,5 +1,6 @@
 package com.otblabs.jiinueboda.assets.valuation.online;
 
+import com.otblabs.jiinueboda.assets.AssetsService;
 import com.otblabs.jiinueboda.assets.valuation.online.models.OnlineAssetValuation;
 import com.otblabs.jiinueboda.assets.valuation.online.models.ValuationRequest;
 import jakarta.validation.Valid;
@@ -15,16 +16,20 @@ import java.util.List;
 public class OnlineValuationController {
 
     private final OnlineValuationService service;
+    private final AssetsService assetsService;
 
-    public OnlineValuationController(OnlineValuationService service) {
+    public OnlineValuationController(OnlineValuationService service, AssetsService assetsService) {
         this.service = service;
+        this.assetsService = assetsService;
     }
 
     @PostMapping("/create-new-valuation")
     public ResponseEntity<OnlineAssetValuation> create(@Valid @RequestBody ValuationRequest request) {
         try{
             OnlineAssetValuation saved = service.create(request);
+            assetsService.updateEvalStatusOnAsset(request.getTechnicianId(), request.getAssetId());
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+
         }catch (Exception exception){
             exception.printStackTrace();
             return ResponseEntity.internalServerError().build();
