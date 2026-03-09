@@ -162,6 +162,7 @@ public class AssetsService {
         int assetId = createnewAssetEtry(assetData, systemUser.getId());
 
         fileManagementService.uploadAssetAttachment(assetData.getChargedLogBook(),"ASSET-DOCUMENT",assetId);
+
         AssetImagesDto assetImagesDto = new AssetImagesDto();
         assetImagesDto.setAssetImages(assetData.getAssetImages());
         assetImagesDto.setAssetId(assetId);
