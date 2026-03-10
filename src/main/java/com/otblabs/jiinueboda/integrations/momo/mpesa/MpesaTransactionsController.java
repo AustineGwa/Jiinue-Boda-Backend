@@ -137,6 +137,7 @@ public class MpesaTransactionsController {
         try {
             Acknowledgement acknowledgement = mpesaTransactionsService.saveBuyGoodsResponse(buygoodsResponse, appId);
             return ResponseEntity.ok(acknowledgement);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.unprocessableEntity().build();

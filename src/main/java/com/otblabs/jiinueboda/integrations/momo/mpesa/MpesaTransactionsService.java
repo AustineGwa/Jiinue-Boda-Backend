@@ -463,6 +463,8 @@ public class MpesaTransactionsService {
 
     public Acknowledgement saveBuyGoodsResponse(String buygoodsResponse, int appId) throws Exception {
 
+        System.out.println("BUY GOODS RESPONSE \n "+ buygoodsResponse );
+
         ObjectMapper objectMapper = new ObjectMapper();
         BuyGoodsApiResponse buyGoodsApiResponse = objectMapper.readValue(buygoodsResponse, BuyGoodsApiResponse.class);
         BuygoodsResultSuccess result = buyGoodsApiResponse.getResult();
@@ -482,10 +484,10 @@ public class MpesaTransactionsService {
          BuygoodsResultParameters buygoodsResultParameters = result.getResultParameters();
          List<BuygoodsResultParameter> resultParameter =  buygoodsResultParameters.getResultParameter();
          String currency =  resultParameter.get(0).getValue();
-
          PaygoodsAmountHolder debitAccountCurrentBalance =  objectMapper.readValue(convertToJson(resultParameter.get(1).getValue()),PaygoodsAmountHolder.class);
          PaygoodsAmountHolder initiatorAccountCurrentBalance =objectMapper.readValue(convertToJson(resultParameter.get(2).getValue()),PaygoodsAmountHolder.class);
          BuygoodsReferenceData referenceData = result.getReferenceData();
+
          try{
             String sql = """
             UPDATE  mpesa_buygoods SET result_desc=?, result_type=?, result_code=?, transaction_id=?,
@@ -506,22 +508,19 @@ public class MpesaTransactionsService {
          }catch(Exception exception){
            exception.printStackTrace();
          }
-
-        if(result.getResultCode().equals("0")){
-            try{
-                String sqlUpdate = "UPDATE fuel_loan SET disbursedAt=NOW() WHERE mpesa_disburse_conversation_id = ? ";
-                jdbcTemplateOne.update(sqlUpdate,conversationID);
-            }catch (Exception exception){exception.printStackTrace();}
-
+//        Jifuel Implementation
+//        if(result.getResultCode().equals("0")){
 //            try{
-//                smsService.sendFuelMessageToFuelBorrower(transactionID, conversationID);
-//                List<Signatory> signatories = userService.getSignatoriesByAppId(appId);
-//
-//                smsService.sendFuelMessageToSignatories(transactionID, conversationID,signatories);
+//                String sqlUpdate = "UPDATE fuel_loan SET disbursedAt=NOW() WHERE mpesa_disburse_conversation_id = ? ";
+//                jdbcTemplateOne.update(sqlUpdate,conversationID);
+//                  smsService.sendFuelMessageToFuelBorrower(transactionID, conversationID);
 //            }catch (Exception exception){exception.printStackTrace();}
+//        }
 
-
-        }
+//        try{
+//            List<Signatory> signatories = userService.getSignatoriesByAppId(appId);
+//            smsService.sendMessageToSignatories(appId, Integer.parseInt(amount),receiverPartyPublicName, String.valueOf(initiatorAccountCurrentBalance),signatories);
+//        }catch (Exception ignored){}
 
         return new Acknowledgement(0,"Success");
     }
