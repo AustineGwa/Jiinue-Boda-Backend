@@ -517,6 +517,18 @@ public class MpesaTransactionsService {
 //            }catch (Exception exception){exception.printStackTrace();}
 //        }
 
+        /*
+
+        {"Result":{"ResultType":0,"ResultCode":0,"ResultDesc":"The service request is processed successfully.",
+        "OriginatorConversationID":"dc04-4cc1-a605-fc87c1089b7f401566","ConversationID":"AG_20260310_0100206709v5b1yobuej",
+        "TransactionID":"UCATN7T2SC","ResultParameters":{"ResultParameter":[{"Key":"Currency","Value":"KES"},
+        {"Key":"DebitAccountCurrentBalance","Value":"{Amount={CurrencyCode=KES, MinimumAmount=24204907, BasicAmount=242049.07}}"},
+        {"Key":"InitiatorAccountCurrentBalance","Value":"{Amount={CurrencyCode=KES, MinimumAmount=24204907, BasicAmount=242049.07}}"}]},
+        "ReferenceData":{"ReferenceItem":[{"Key":"QueueTimeoutURL","Value":"https:\/\/internalapi.safaricom.net\/mpesa\/b2bresults\/v1\/submit"},
+        {"Key":"Occassion"}]}}}
+
+         */
+
 //        try{
 //            List<Signatory> signatories = userService.getSignatoriesByAppId(appId);
 //            smsService.sendMessageToSignatories(appId, Integer.parseInt(amount),receiverPartyPublicName, String.valueOf(initiatorAccountCurrentBalance),signatories);
@@ -652,7 +664,9 @@ public class MpesaTransactionsService {
         try{
             List<Signatory> signatories = userService.getSignatoriesByAppId(appId);
             smsService.sendMessageToSignatories(appId, Integer.parseInt(amount),receiverPartyPublicName, String.valueOf(initiatorAccountCurrentBalance),signatories);
-        }catch (Exception ignored){}
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
 
 
         return new Acknowledgement(0,"Success");
