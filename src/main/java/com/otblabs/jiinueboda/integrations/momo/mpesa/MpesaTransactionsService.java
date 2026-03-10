@@ -441,8 +441,8 @@ public class MpesaTransactionsService {
         BuygoodsRequestResponse b2CRequestResponse =  objectMapper.readValue(responseString,BuygoodsRequestResponse.class);
 
         String sql = """
-                INSERT INTO mpesa_buygoods (command_id,party_b,remarks,response_code,response_description,conversation_id,
-                originator_conversation_id,app_id,created_at) VALUES(?,?,?,?,?,?,?,?,NOW())
+                 INSERT INTO mpesa_buygoods (command_id,party_b,remarks,response_code,response_description,conversation_id,
+                 originator_conversation_id,transaction_amount,app_id,created_at) VALUES(?,?,?,?,?,?,?,?,?,NOW())
 
                 """;
 
@@ -455,6 +455,7 @@ public class MpesaTransactionsService {
                 b2CRequestResponse.getResponseDescription(),
                 b2CRequestResponse.getConversationID(),
                 b2CRequestResponse.getOriginatorConversationID(),
+                buyGoodsRequest.getAmount(),
                 appId
         );
 
@@ -508,14 +509,7 @@ public class MpesaTransactionsService {
          }catch(Exception exception){
            exception.printStackTrace();
          }
-//        Jifuel Implementation
-//        if(result.getResultCode().equals("0")){
-//            try{
-//                String sqlUpdate = "UPDATE fuel_loan SET disbursedAt=NOW() WHERE mpesa_disburse_conversation_id = ? ";
-//                jdbcTemplateOne.update(sqlUpdate,conversationID);
-//                  smsService.sendFuelMessageToFuelBorrower(transactionID, conversationID);
-//            }catch (Exception exception){exception.printStackTrace();}
-//        }
+         sendJifuelMessage();
 
         /*
 
@@ -529,12 +523,35 @@ public class MpesaTransactionsService {
 
          */
 
-//        try{
-//            List<Signatory> signatories = userService.getSignatoriesByAppId(appId);
-//            smsService.sendMessageToSignatories(appId, Integer.parseInt(amount),receiverPartyPublicName, String.valueOf(initiatorAccountCurrentBalance),signatories);
-//        }catch (Exception ignored){}
+        sendTillMessageToSignatories(appId,"Mpesa ref:"+transactionID,
+                String.valueOf(initiatorAccountCurrentBalance.getAmount().getBasicAmount()),
+                originatorConversationID);
 
         return new Acknowledgement(0,"Success");
+    }
+
+    private void sendTillMessageToSignatories(int appId, String  reciever,String accountBalance, String originatorConversationID) {
+
+        int amount = jdbcTemplateOne.queryForObject("SELECT transaction_amount FROM mpesa_buygoods WHERE originator_conversation_id = ?",
+                (rs,i)-> rs.getInt("transaction_amount"),originatorConversationID);
+
+        try{
+            List<Signatory> signatories = userService.getSignatoriesByAppId(appId);
+            smsService.sendMessageToSignatories(appId, amount,reciever,accountBalance ,signatories);
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
+    }
+
+    private void sendJifuelMessage() {
+//        Jifuel Implementation
+//        if(result.getResultCode().equals("0")){
+//            try{
+//                String sqlUpdate = "UPDATE fuel_loan SET disbursedAt=NOW() WHERE mpesa_disburse_conversation_id = ? ";
+//                jdbcTemplateOne.update(sqlUpdate,conversationID);
+//                smsService.sendFuelMessageToFuelBorrower(transactionID, conversationID);
+//            }catch (Exception exception){exception.printStackTrace();}
+//        }
     }
 
     String convertToJson(String str){
@@ -908,7 +925,7 @@ public class MpesaTransactionsService {
         request.setPartyB(tillNumber);
         request.setAccountReference(accountRef);
         request.setRequester("");
-        request.setRemarks("Payment being processed");
+        request.setRemarks(accountRef);
         try {
             initiateBuyGoods(request, 3);
         } catch (Exception e) {
