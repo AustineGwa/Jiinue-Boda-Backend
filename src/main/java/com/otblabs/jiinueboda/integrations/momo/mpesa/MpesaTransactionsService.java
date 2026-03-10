@@ -664,7 +664,7 @@ public class MpesaTransactionsService {
         try{
             List<Signatory> signatories = userService.getSignatoriesByAppId(appId);
             int value = (int) Double.parseDouble(amount);
-            smsService.sendMessageToSignatories(appId, value,receiverPartyPublicName, String.valueOf(initiatorAccountCurrentBalance),signatories);
+            smsService.sendMessageToSignatories(appId, value,receiverPartyPublicName, String.valueOf(initiatorAccountCurrentBalance.getAmount().getBasicAmount()),signatories);
         }catch (Exception exception){
             exception.printStackTrace();
         }
