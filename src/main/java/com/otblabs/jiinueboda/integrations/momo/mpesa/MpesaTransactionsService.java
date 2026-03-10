@@ -463,7 +463,7 @@ public class MpesaTransactionsService {
 
     public Acknowledgement saveBuyGoodsResponse(String buygoodsResponse, int appId) throws Exception {
 
-        System.out.println("BUY GOODS RESPONSE \n "+ buygoodsResponse );
+
 
         ObjectMapper objectMapper = new ObjectMapper();
         BuyGoodsApiResponse buyGoodsApiResponse = objectMapper.readValue(buygoodsResponse, BuyGoodsApiResponse.class);
@@ -760,7 +760,7 @@ public class MpesaTransactionsService {
                     try {
                        insertedTransactions.set(insertMissingTransactionsToDB(res, new ArrayList<InsertedTransaction>()));
                     } catch (Exception e) {
-//                        System.err.println("ERROR INSERTING "+res.getTransactionId());
+
                     }
                 });
             });
@@ -893,7 +893,7 @@ public class MpesaTransactionsService {
         PaybillRequestResponse buygoodsRequestResponse = null;
         try {
             buygoodsRequestResponse = initiatePaybill(paybillRequest,3);
-            System.out.println(buygoodsRequestResponse);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -958,7 +958,6 @@ public class MpesaTransactionsService {
 
         try {
             B2CRequestResponse res = initiateb2c(b2CRequest, 3);
-            System.out.println(res.toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
