@@ -16,23 +16,21 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class CronJobs {
+public class SystemCronJobs {
 
     private final LendingService lendingService;
     private final FuelLoanService fuelLoanService;
     private final CollectionsService collectionsService;
-    private final SmsService smsService;
     private final InvestmentManagementService investmentManagementService;
 
     private final BikeRecoveryService bikeRecoveryService;
 
     private final EmailBackupsService emailBackupsService;
 
-    public CronJobs(LendingService lendingService, FuelLoanService fuelLoanService, CollectionsService collectionsService, SmsService smsService, InvestmentManagementService investmentManagementService, BikeRecoveryService bikeRecoveryService, EmailBackupsService emailBackupsService) {
+    public SystemCronJobs(LendingService lendingService, FuelLoanService fuelLoanService, CollectionsService collectionsService, InvestmentManagementService investmentManagementService, BikeRecoveryService bikeRecoveryService, EmailBackupsService emailBackupsService) {
         this.lendingService = lendingService;
         this.fuelLoanService = fuelLoanService;
         this.collectionsService = collectionsService;
-        this.smsService = smsService;
         this.investmentManagementService = investmentManagementService;
         this.bikeRecoveryService = bikeRecoveryService;
         this.emailBackupsService = emailBackupsService;
@@ -84,32 +82,6 @@ public class CronJobs {
             throw new RuntimeException(e);
         }
     }
-
-    @Scheduled(cron = "0 0 20 * * *") //every 8 pm
-    public void sendDailyPaymentReminder(){
-        List<LoansByAge> pendingLoanUserDetailList = collectionsService.getLoansByVariance(0);
-        smsService.sendDailyReminder(pendingLoanUserDetailList);
-    }
-
-    /*
-        The cron expression 0 0 07 * * consists of five fields:
-        0 - Seconds (0-59)
-        0 - Minutes (0-59)
-        07 - Hours (0-23)
-        * - Day of the month (1-31)
-        * - Month (1-12, or JAN-DEC)
-        This expression means that the annotated method should run at 0 seconds, 0 minutes, 07 hours (7 AM), every day of the month, and every month.
-     */
-    @Scheduled(cron = "0 0 11 * * *") //every 11 am
-    public void sendDailyPaymentReminderForAreas(){
-        List<LoansByAge> pendingLoanUserDetailList = collectionsService.getLoansByVariance(0);
-        smsService.sendDailyReminder(pendingLoanUserDetailList);
-
-    }
-
-
-
-
 
     @Scheduled(cron = "0 0 00 * * *")  //every 12 am
     public void updateDailyExpectedCollection(){

@@ -31,7 +31,7 @@ public class FintechApplication implements ApplicationRunner {
 
     }
 
-}
+ }
 
 
 
