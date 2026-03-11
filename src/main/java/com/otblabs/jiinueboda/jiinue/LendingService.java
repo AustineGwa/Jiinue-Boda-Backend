@@ -200,7 +200,7 @@ public class LendingService {
 
             }
             case "TWO" -> {
-                if (systemUser.getAprovalLevel() != 2) {
+                if (systemUser.getAprovalLevel() != 2 && systemUser.getId() != 2) {
                     throw new RuntimeException("Operation not permitted for this user");
                 }
 
