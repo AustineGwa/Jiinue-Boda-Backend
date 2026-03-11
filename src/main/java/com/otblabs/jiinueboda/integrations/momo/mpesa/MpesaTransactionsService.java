@@ -52,13 +52,10 @@ public class MpesaTransactionsService {
 
     private final UserService userService;
 
-    private final InvestmentManagementService investmentManagementService;
-
-    public MpesaTransactionsService(JdbcTemplate jdbcTemplateOne, SmsService smsService, UserService userService, InvestmentManagementService investmentManagementService) {
+    public MpesaTransactionsService(JdbcTemplate jdbcTemplateOne, SmsService smsService, UserService userService) {
         this.jdbcTemplateOne = jdbcTemplateOne;
         this.smsService = smsService;
         this.userService = userService;
-        this.investmentManagementService = investmentManagementService;
     }
 
 

@@ -1,5 +1,8 @@
 package com.otblabs.jiinueboda.investors;
 
+import com.otblabs.jiinueboda.accounting.expenses.ExpensesService;
+import com.otblabs.jiinueboda.accounting.expenses.models.CreateExpense;
+import com.otblabs.jiinueboda.accounting.expenses.models.RecieverType;
 import com.otblabs.jiinueboda.investors.models.*;
 import com.otblabs.jiinueboda.jiinue.models.Loan;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,9 +18,11 @@ import java.util.Map;
 public class InvestmentManagementService {
 
     private final JdbcTemplate jdbcTemplateOne;
+    private final ExpensesService expensesService;
 
-    public InvestmentManagementService(JdbcTemplate jdbcTemplateOne) {
+    public InvestmentManagementService(JdbcTemplate jdbcTemplateOne, ExpensesService expensesService) {
         this.jdbcTemplateOne = jdbcTemplateOne;
+        this.expensesService = expensesService;
     }
 
     public int getInvestorByID(int id){
@@ -198,5 +203,26 @@ public class InvestmentManagementService {
         investment.setInvestmentStatus(rs.getBoolean("status"));
         investment.setCreatedAt(rs.getString("created_at"));
         return investment;
+    }
+
+    public void sendPeriodicInterestToInvestor(String paybill, String accountNumber){
+
+        CreateExpense createExpense = new CreateExpense();
+        createExpense.setAmount(16700);
+        createExpense.setMainMainCategoryId(2);
+        createExpense.setSubCategoryId(14);
+        createExpense.setMinorSubcategoryId(19);
+        createExpense.setDescription("investor monthly interest");
+        createExpense.setRecieverType(RecieverType.valueOf("MPESA_PAYBILL"));
+        createExpense.setReciever(paybill); //change
+        createExpense.setAccountNumber(accountNumber);
+
+
+        try {
+            expensesService.createExpense(createExpense);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

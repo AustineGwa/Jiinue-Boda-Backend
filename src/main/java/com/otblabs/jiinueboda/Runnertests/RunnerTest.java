@@ -383,4 +383,8 @@ public class RunnerTest {
     public void topUpLoan(int amount,String phone, String loanId) {
         mpesaTransactionsService.sendMoney(String.valueOf(amount),phone,loanId);
     }
+
+	public void sendSogomoMonthlyInterest(){
+		investmentManagementService.sendPeriodicInterestToInvestor("542542","03405413296150");
+	}
 }
