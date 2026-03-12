@@ -2,6 +2,8 @@ package com.otblabs.jiinueboda.assets.valuation.online;
 
 import com.otblabs.jiinueboda.assets.valuation.online.models.OnlineAssetValuation;
 import com.otblabs.jiinueboda.assets.valuation.online.models.ValuationRequest;
+import com.otblabs.jiinueboda.users.UserService;
+import com.otblabs.jiinueboda.users.models.SystemUser;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +22,11 @@ import java.util.Optional;
 public class OnlineValuationService {
 
     private final JdbcTemplate jdbc;
+    private final UserService userService;
 
-    public OnlineValuationService(JdbcTemplate jdbc) {
+    public OnlineValuationService(JdbcTemplate jdbc, UserService userService) {
         this.jdbc = jdbc;
+        this.userService = userService;
     }
 
     // ── Scoring weights ──────────────────────────────────────
@@ -40,8 +44,12 @@ public class OnlineValuationService {
     private static final double[] ACC_WEIGHTS    = { 0.0, 2.0, 3.0 };
 
 
-    public OnlineAssetValuation create(ValuationRequest req) {
+    public OnlineAssetValuation create(ValuationRequest req, String user) {
+
+        SystemUser systemUser = userService.getByEmailOrPhone(user);
+
         OnlineAssetValuation v = mapRequestToModel(req);
+        v.setTechnicianId(systemUser.getId());
         computeScores(v);
         v.setGrade(deriveGrade(v.getTotalScore()));
         int newId = insert(v);
@@ -61,33 +69,60 @@ public class OnlineValuationService {
     }
 
     private void computeScores(OnlineAssetValuation v) {
-        BigDecimal wiringScore = sum(WIRING_WEIGHTS,
-                v.getWiringHarness(), v.getBatteryHealth(), v.getChargingSystem(),
-                v.getWiringNeatness(), v.getElectricalFunc(), v.getGpsFeasibility());
 
-        BigDecimal tyreScore = sum(TYRE_WEIGHTS,
-                v.getFrontTyre(), v.getRearTyre());
+        // ── Engine (max 30): 4 items × weights [0, 2.5, 5, 7.5]
+        double[] engineW = {0, 2.5, 5, 7.5};
+        double engineScore =
+                engineW[safe(v.getEnginePerformance())] +
+                        engineW[safe(v.getGearbox())]           +
+                        engineW[safe(v.getSuspension())]         +
+                        engineW[safe(v.getBraking())];
+        v.setEngineScore(bd(engineScore));
 
-        BigDecimal bodyScore = sum(BODY_WEIGHTS,
-                v.getFrameAlignment(), v.getFuelTank(), v.getBodyPanels(),
-                v.getPaintCondition(), v.getGeneralAppear());
+        // ── Wiring (max 30): 6 items × weights [0, 1.67, 3.33, 5]
+        double[] wiringW = {0, 1.67, 3.33, 5};
+        double wiringScore =
+                wiringW[safe(v.getWiringHarness())]   +
+                        wiringW[safe(v.getBatteryHealth())]   +
+                        wiringW[safe(v.getChargingSystem())]  +
+                        wiringW[safe(v.getWiringNeatness())]  +
+                        wiringW[safe(v.getElectricalFunc())]  +
+                        wiringW[safe(v.getGpsFeasibility())];
+        v.setWiringScore(bd(wiringScore));
 
-        BigDecimal accessoryScore = sum(ACC_WEIGHTS,
-                v.getAccSideMirrors(), v.getAccCrashBars(),
-                v.getAccItem3(), v.getAccItem4(), v.getAccItem5());
+        // ── Tyres (max 10): 2 items × weights [0, 1.67, 3.33, 5]
+        double[] tyreW = {0, 1.67, 3.33, 5};
+        double tyreScore =
+                tyreW[safe(v.getFrontTyre())] +
+                        tyreW[safe(v.getRearTyre())];
+        v.setTyreScore(bd(tyreScore));
 
-        BigDecimal total = wiringScore
-                .add(tyreScore)
-                .add(bodyScore)
-                .add(accessoryScore)
-                .setScale(2, RoundingMode.HALF_UP);
+        // ── Body (max 20): 5 items × weights [0, 1.33, 2.67, 4]
+        double[] bodyW = {0, 1.33, 2.67, 4};
+        double bodyScore =
+                bodyW[safe(v.getFrameAlignment())] +
+                        bodyW[safe(v.getFuelTank())]       +
+                        bodyW[safe(v.getBodyPanels())]     +
+                        bodyW[safe(v.getPaintCondition())] +
+                        bodyW[safe(v.getGeneralAppear())];
+        v.setBodyScore(bd(bodyScore));
 
-        v.setWiringScore(wiringScore);
-        v.setTyreScore(tyreScore);
-        v.setBodyScore(bodyScore);
-        v.setAccessoryScore(accessoryScore);
-        v.setTotalScore(total);
+        // ── Accessories (max 10): 5 items × weights [0, 1, 2]
+        double[] accW = {0, 1, 2};
+        double accessoryScore =
+                accW[safe(v.getAccSideMirrors())] +
+                        accW[safe(v.getAccCrashBars())]   +
+                        accW[safe(v.getAccItem3())]       +
+                        accW[safe(v.getAccItem4())]       +
+                        accW[safe(v.getAccItem5())];
+        v.setAccessoryScore(bd(accessoryScore));
+
+        // ── Total
+        v.setTotalScore(bd(engineScore + wiringScore + tyreScore + bodyScore + accessoryScore));
     }
+
+    private int safe(Integer val) { return val != null ? val : 0; }
+    private BigDecimal bd(double v) { return BigDecimal.valueOf(v).setScale(2, RoundingMode.HALF_UP); }
 
     private BigDecimal sum(double[] weights, Integer... ratings) {
         double total = 0.0;
@@ -109,22 +144,24 @@ public class OnlineValuationService {
     private int insert(OnlineAssetValuation v) {
         String sql = """
              INSERT INTO asset_valuations (
-                                         asset_id, inspector,
-                                         wiring_harness, battery_health, charging_system,
-                                         wiring_neatness, electrical_func, gps_feasibility, wiring_score,
-                                         front_tyre, rear_tyre, tyre_score,
-                                         frame_alignment, fuel_tank, body_panels,
-                                         paint_condition, general_appear, body_score,
-                                         acc_side_mirrors, acc_crash_bars, acc_item_3, acc_item_4, acc_item_5, accessory_score,
-                                         total_score, grade, remarks, assigned_value
-                                     ) VALUES (
-                                          ?, ?,
-                                         ?, ?, ?, ?, ?, ?, ?,
-                                         ?, ?, ?,
-                                         ?, ?, ?, ?, ?, ?,
-                                         ?, ?, ?, ?, ?, ?,
-                                         ?, ?, ?,?
-                                     )
+                                                      asset_id, inspector,
+                                                      engine_performance, gearbox, suspension, braking, engine_score,
+                                                      wiring_harness, battery_health, charging_system,
+                                                      wiring_neatness, electrical_func, gps_feasibility, wiring_score,
+                                                      front_tyre, rear_tyre, tyre_score,
+                                                      frame_alignment, fuel_tank, body_panels,
+                                                      paint_condition, general_appear, body_score,
+                                                      acc_side_mirrors, acc_crash_bars, acc_item_3, acc_item_4, acc_item_5, accessory_score,
+                                                      total_score, grade, remarks, assigned_value
+                                                  ) VALUES (
+                                                       ?, ?,
+                                                      ?, ?,?,?,?,
+                                                      ?, ?, ?, ?, ?, ?, ?,
+                                                      ?, ?, ?,
+                                                      ?, ?, ?, ?, ?, ?,
+                                                      ?, ?, ?, ?, ?, ?,
+                                                      ?, ?, ?,?
+                                                  )
         """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -133,6 +170,13 @@ public class OnlineValuationService {
             int i = 1;
             ps.setInt   (i++, v.getAssetId());
             ps.setInt(i++, v.getTechnicianId());
+
+            //SECTION 1
+            ps.setObject(i++, v.getEnginePerformance());
+            ps.setObject(i++, v.getGearbox());
+            ps.setObject(i++, v.getSuspension());
+            ps.setObject(i++, v.getBraking());
+            ps.setBigDecimal(i++, v.getEngineScore());
 
             // Section 2
             ps.setObject(i++, v.getWiringHarness());
@@ -228,8 +272,14 @@ public class OnlineValuationService {
 
     private OnlineAssetValuation mapRequestToModel(ValuationRequest req) {
         OnlineAssetValuation v = new OnlineAssetValuation();
+
         v.setAssetId        (req.getAssetId());
         v.setTechnicianId   (req.getTechnicianId());
+
+        v.setEnginePerformance(req.getEnginePerformance());
+        v.setGearbox(req.getGearbox());
+        v.setSuspension(req.getSuspension());
+        v.setBraking(req.getBraking());
         v.setWiringHarness  (req.getWiringHarness());
         v.setBatteryHealth  (req.getBatteryHealth());
         v.setChargingSystem (req.getChargingSystem());

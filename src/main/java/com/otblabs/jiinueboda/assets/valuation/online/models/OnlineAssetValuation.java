@@ -18,6 +18,13 @@ public class OnlineAssetValuation {
     private Integer assetId;
     private int  technicianId;
 
+    // Section 1 – Engine
+    private Integer enginePerformance;
+    private Integer gearbox;
+    private Integer suspension;
+    private Integer braking;
+    private BigDecimal engineScore;
+
     // Section 2 – Wiring & GPS
     private Integer wiringHarness;
     private Integer batteryHealth;

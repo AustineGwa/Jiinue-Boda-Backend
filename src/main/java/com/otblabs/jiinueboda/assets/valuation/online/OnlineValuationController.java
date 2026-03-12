@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -24,9 +25,9 @@ public class OnlineValuationController {
     }
 
     @PostMapping("/create-new-valuation")
-    public ResponseEntity<OnlineAssetValuation> create(@Valid @RequestBody ValuationRequest request) {
+    public ResponseEntity<OnlineAssetValuation> create(@Valid @RequestBody ValuationRequest request, Principal principal) {
         try{
-            OnlineAssetValuation saved = service.create(request);
+            OnlineAssetValuation saved = service.create(request, principal.getName());
             assetsService.updateEvalStatusOnAsset(request.getTechnicianId(), request.getAssetId());
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
 

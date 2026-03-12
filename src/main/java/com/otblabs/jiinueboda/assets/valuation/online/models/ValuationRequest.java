@@ -26,6 +26,12 @@ public class ValuationRequest {
     private Integer assetId;
     private int technicianId;
 
+    // ── Section 1 – Engine & Mechanical (0–3)
+    @Min(0) @Max(3) private Integer enginePerformance;
+    @Min(0) @Max(3) private Integer gearbox;
+    @Min(0) @Max(3) private Integer suspension;
+    @Min(0) @Max(3) private Integer braking;
+
 
     // ── Section 2 – Wiring & GPS (0–3)
     @Min(0) @Max(3) private Integer wiringHarness;
