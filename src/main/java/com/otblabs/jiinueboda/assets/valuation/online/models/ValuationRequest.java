@@ -10,11 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Inbound DTO from the valuation form.
- * Scores (wiring_score, tyre_score, etc.) are NOT accepted from the client —
- * they are computed server-side in the service layer.
- */
 
 @Getter
 @Setter

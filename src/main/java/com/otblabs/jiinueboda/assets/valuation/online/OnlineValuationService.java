@@ -58,7 +58,7 @@ public class OnlineValuationService {
     }
 
     public List<OnlineAssetValuation> ValuationForAssetByAssetId(int assetId) {
-        String sql = "SELECT * FROM asset_valuations WHERE asset_id = ? ORDER BY inspection_date DESC";
+        String sql = "SELECT * FROM asset_valuations WHERE asset_id = ? ORDER BY created_at DESC";
         return jdbc.query(sql, rowMapper(), assetId);
     }
 
@@ -226,6 +226,11 @@ public class OnlineValuationService {
             v.setId             (rs.getInt("id"));
             v.setAssetId        (rs.getInt("asset_id"));
             v.setTechnicianId      (rs.getInt("inspector"));
+            v.setEnginePerformance(rs.getInt("engine_performance"));
+            v.setGearbox(rs.getInt("gearbox"));
+            v.setSuspension(rs.getInt("suspension"));
+            v.setBraking(rs.getInt("braking"));
+            v.setEngineScore(rs.getBigDecimal("engine_score"));
             v.setWiringHarness  (getNullableInt(rs, "wiring_harness"));
             v.setBatteryHealth  (getNullableInt(rs, "battery_health"));
             v.setChargingSystem (getNullableInt(rs, "charging_system"));

@@ -47,9 +47,16 @@ public class OnlineValuationController {
                         HttpStatus.NOT_FOUND, "Valuation not found with id: " + id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<OnlineAssetValuation>> getByAsset( @RequestParam(name = "assetId") Integer assetId) {
-        List<OnlineAssetValuation> results = service.ValuationForAssetByAssetId(assetId);
-        return ResponseEntity.ok(results);
+    @GetMapping("/assets/{assetId}")
+    public ResponseEntity<List<OnlineAssetValuation>> getByAsset( @PathVariable int assetId) {
+        try{
+            List<OnlineAssetValuation> results = service.ValuationForAssetByAssetId(assetId);
+            return ResponseEntity.ok(results);
+
+        }catch(Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+
     }
 }
