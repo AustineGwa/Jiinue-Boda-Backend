@@ -51,7 +51,7 @@ public class AssetsController {
 
 
     @PostMapping(value = "/valuation/complete", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> saveValuation(@ModelAttribute ValuationSubmissionData valuationSubmissionData) {
+    public ResponseEntity<?> assignValuation(@ModelAttribute ValuationSubmissionData valuationSubmissionData) {
         try{
             return ResponseEntity.ok(assetsService.updateValuationForAsset(valuationSubmissionData));
         }catch (Exception exception){
