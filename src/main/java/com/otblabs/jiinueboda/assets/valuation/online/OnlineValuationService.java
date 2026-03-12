@@ -108,25 +108,24 @@ public class OnlineValuationService {
 
     private int insert(OnlineAssetValuation v) {
         String sql = """
-            INSERT INTO asset_valuations (
-                asset_id, inspector,
-                wiring_harness, battery_health, charging_system,
-                wiring_neatness, electrical_func, gps_feasibility, wiring_score,
-                front_tyre, rear_tyre, tyre_score,
-                frame_alignment, fuel_tank, body_panels,
-                paint_condition, general_appear, body_score,
-                acc_side_mirrors, acc_crash_bars, acc_item_3, acc_item_4, acc_item_5, accessory_score,
-                total_score, grade, remarks
-            ) VALUES (
-                 ?, ?,
-                ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?,
-                ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?,
-                ?, ?, ?
-            )
+             INSERT INTO asset_valuations (
+                                         asset_id, inspector,
+                                         wiring_harness, battery_health, charging_system,
+                                         wiring_neatness, electrical_func, gps_feasibility, wiring_score,
+                                         front_tyre, rear_tyre, tyre_score,
+                                         frame_alignment, fuel_tank, body_panels,
+                                         paint_condition, general_appear, body_score,
+                                         acc_side_mirrors, acc_crash_bars, acc_item_3, acc_item_4, acc_item_5, accessory_score,
+                                         total_score, grade, remarks, assigned_value
+                                     ) VALUES (
+                                          ?, ?,
+                                         ?, ?, ?, ?, ?, ?, ?,
+                                         ?, ?, ?,
+                                         ?, ?, ?, ?, ?, ?,
+                                         ?, ?, ?, ?, ?, ?,
+                                         ?, ?, ?,?
+                                     )
         """;
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbc.update(con -> {
@@ -168,7 +167,8 @@ public class OnlineValuationService {
             // Totals
             ps.setBigDecimal(i++, v.getTotalScore());
             ps.setString    (i++, v.getGrade());
-            ps.setString    (i,   v.getRemarks());
+            ps.setString    (i++,   v.getRemarks());
+            ps.setInt    (i++,   v.getAssignedValue());
 
             return ps;
         }, keyHolder);
@@ -211,6 +211,8 @@ public class OnlineValuationService {
             v.setTotalScore     (rs.getBigDecimal("total_score"));
             v.setGrade          (rs.getString("grade"));
             v.setRemarks        (rs.getString("remarks"));
+            v.setAssignedValue  (rs.getInt("assigned_value"));
+
 
             v.setCreatedAt      (rs.getTimestamp("created_at").toLocalDateTime());
             v.setUpdatedAt      (rs.getTimestamp("updated_at").toLocalDateTime());
@@ -247,6 +249,7 @@ public class OnlineValuationService {
         v.setAccItem4       (req.getAccItem4());
         v.setAccItem5       (req.getAccItem5());
         v.setRemarks        (req.getRemarks());
+        v.setAssignedValue  (req.getAssignedValue());
         return v;
     }
 }

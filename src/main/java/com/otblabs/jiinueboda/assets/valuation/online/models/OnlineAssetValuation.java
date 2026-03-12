@@ -52,6 +52,7 @@ public class OnlineAssetValuation {
     private BigDecimal totalScore;
     private String     grade;
     private String     remarks;
+    private int        assignedValue;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

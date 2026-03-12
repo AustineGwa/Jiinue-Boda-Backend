@@ -53,5 +53,8 @@ public class ValuationRequest {
     @Min(0) @Max(2) private Integer accItem4;
     @Min(0) @Max(2) private Integer accItem5;
 
+    @NotNull
+    private int assignedValue;
+
     private String remarks;
 }
