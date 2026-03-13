@@ -34,14 +34,14 @@ public class ExpensesService {
 
 
         String sql = """
-                  SELECT id,description, reciever_type, reciever, account_number, amount, created_at,
-                                                           (SELECT category_name FROM expense_categories_2 WHERE id= main_category_id) as main_category,
-                                                           (SELECT subcategory_name FROM expense_subcategories_2 WHERE id= subcategory_id) as sub_category,
-                                                           (SELECT minor_subcategory_name FROM expense_minor_subcategories WHERE id= minor_subcategory_id) as minor_subcategory,
-                                                           (SELECT transaction_id FROM mpesa_b2c WHERE occasion = CONCAT('EXPENSE',temp_expense_requests.id) AND result_code = 0  LIMIT 1) as mpesa_refference
-                                                    FROM temp_expense_requests
-                                                    WHERE status='APPROVED' AND  DATE(created_at) BETWEEN DATE('2026-02-01') AND DATE('2026-02-28')
-                                                      AND deleted_at is null ORDER BY created_at DESC
+                SELECT id,description, reciever_type, reciever, account_number, amount, created_at,
+                                                         (SELECT category_name FROM expense_categories_2 WHERE id= main_category_id) as main_category,
+                                                         (SELECT subcategory_name FROM expense_subcategories_2 WHERE id= subcategory_id) as sub_category,
+                                                         (SELECT minor_subcategory_name FROM expense_minor_subcategories WHERE id= minor_subcategory_id) as minor_subcategory,
+                                                         (SELECT transaction_id FROM mpesa_b2c WHERE occasion = CONCAT('EXPENSE',temp_expense_requests.id) AND result_code = 0  LIMIT 1) as mpesa_refference
+                                                  FROM temp_expense_requests
+                                                  WHERE status='APPROVED' AND  DATE(created_at) BETWEEN DATE(?) AND DATE(?)
+                                                    AND deleted_at is null ORDER BY created_at DESC
                 """;
 
         return jdbcTemplateOne.query(sql,(rs,i)->setPendingExpenses(rs),startDate,endDate);
