@@ -3,6 +3,7 @@ package com.otblabs.jiinueboda.jiinue;
 import com.otblabs.jiinueboda.collections.models.SpecialCaseLoan;
 import com.otblabs.jiinueboda.filemanagement.FileManagementService;
 import com.otblabs.jiinueboda.jiinue.models.*;
+import lombok.Getter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,8 @@ public class LoansManagementController {
         this.lendingService = lendingService;
         this.fileManagementService = fileManagementService;
     }
+
+
 
     @PostMapping(value = "/request/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<Object> createNewLoanRequest(@ModelAttribute NewLoanRequest newLoanRequest, Principal principal){

@@ -112,6 +112,22 @@ public class UsersController {
         }
     }
 
+//    @GetMapping("/profile-completion-percenatage")
+//    ResponseEntity<Object> checkProfileQualificationForLoan(){
+//        /*
+//        const hasUploadedId = userProfile?.nationalIdUrl ? 1 : 0;
+//        const hasProfilePic = userProfile?.passportPictureUrl ? 1 : 0;
+//        const hasKraPin = userProfile?.kraPinUrl ? 1 : 0;
+//        const hasDrivingLicence = userProfile?.drivingLicenceUrl ? 1 : 0;
+//        const hasUpdatedKYC = userProfile?.hasUpdatedKyc ? 1 : 0
+//        const assetIsEvaluated = assets?.some(asset => asset.evalStatus === 1);
+//        const hasEvaluatedAsset = assetFiles?.length > 0  && assetIsEvaluated ? 1 : 0;
+//        const total = hasUploadedId + hasProfilePic + hasKraPin + hasDrivingLicence + hasUpdatedKYC + hasEvaluatedAsset;
+//        return (total / 6) * 100;
+//  }
+//         */
+//    }
+
     @PostMapping("/update-user-kyc")
     ResponseEntity<Object> updateUserKyc(@RequestBody UserKyc userKyc, Principal principal){
 

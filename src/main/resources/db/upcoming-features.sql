@@ -1,249 +1,28 @@
---    insert new mpesa app
-INSERT INTO mpesa_apps(id, consumer_key, consumer_secret, app_name, api_key,
-                       shotcode, products_activated, response_type,
-                       c2b_confirmation_url, c2b_validation_url, created_at,
-                       updated_at,transaction_type,
-                       is_b2c_enabled, b2c_shortcode,
-                       b2c_initiator)
+-- --    insert new mpesa app
+-- INSERT INTO mpesa_apps(id, consumer_key, consumer_secret, app_name, api_key,
+--                        shotcode, products_activated, response_type,
+--                        c2b_confirmation_url, c2b_validation_url, created_at,
+--                        updated_at,transaction_type,
+--                        is_b2c_enabled, b2c_shortcode,
+--                        b2c_initiator)
+--
+-- VALUES (3,'PIVENQ4LupWGvvAWfIvnddrTlMi3sA0D','OF7szzA9up3YV0K1','pikipata','5342321d568c1f23cdb4ef71f9a8255dabdfe39ee138f997c21777de25491b69','4125097', 1,'Complete',
+--         'https://fintech.misierraltd.com/payments/momo/postc2b/3','https://fintech.misierraltd.com/payments/momo/postc2b/3', NOW(),NOW(),'CustomerPayBillOnline',1,'4125097','austine')
+--
 
-VALUES (3,'PIVENQ4LupWGvvAWfIvnddrTlMi3sA0D','OF7szzA9up3YV0K1','pikipata','5342321d568c1f23cdb4ef71f9a8255dabdfe39ee138f997c21777de25491b69','4125097', 1,'Complete',
-        'https://fintech.misierraltd.com/payments/momo/postc2b/3','https://fintech.misierraltd.com/payments/momo/postc2b/3', NOW(),NOW(),'CustomerPayBillOnline',1,'4125097','austine')
-
-
---get all loans for sacco for a given month
-SELECT loanPrincipal as principal_borrowed,total_loan_disburse as amount_disbursed,client_loan_total as total_owed,
-       daily_amount_expected,loan_term,loanPurpose,loanAccountMPesa as loan_id,createdAt as date_applied,disbursed_at as date_disbursed
-FROM loans WHERE userID IN (SELECT id from users WHERE patner_id = 1) AND MONTH(DATE(disbursed_at)) = 1 AND YEAR(DATE(disbursed_at))=2025
-
---get all transactions for sacco loans disbursed on a given month
-SELECT FirstName,TransID,TransTime,TransAmount,BillRefNumber,ManualRefNumber FROM mpesa_c2b
-WHERE BillRefNumber IN (SELECT loanAccountMPesa FROM loans WHERE userID IN (SELECT id from users WHERE patner_id = 1) AND MONTH(DATE(TransTime)) = 7 AND YEAR(DATE(TransTime)) = 2025)
-   OR ManualRefNumber IN (SELECT loanAccountMPesa FROM loans WHERE userID IN (SELECT id from users WHERE patner_id = 1) AND MONTH(DATE(TransTime)) =  7  AND YEAR(DATE(TransTime)) = 2025)
-AND MONTH(DATE(TransTime)) = 7 AND YEAR(DATE(TransTime)) = 2025
- 
---loan restructure
-update loans set loan_term = 60, total_mon_fee = 1200, total_interest_amount = 3000, client_loan_total = 34200, daily_amount_expected = 570 where loanAccountMPesa = ''
- 
---approve user to partner
-UPDATE users SET partner_approved = 1, user_status=1, patner_id=2 WHERE id= (SELECT  id FROM users WHERE phone = '254759100412');
- 
-
---get distribution of DSLP of outstanding balances
-SELECT DSLP,count(variance) as total_customers ,sum(variance) as total_variance_today FROM (
-select  DSLP,TotalPaid,totalExpected, IF(TotalPaid > totalExpected, 0, totalExpected - TotalPaid) as variance from (
-select
-DATEDIFF(curdate(),IFNULL(last_payment_date,l.disbursed_at))  as DSLP,
-IFNULL(l.paid_amount,0) as TotalPaid,
-l.expected_amount as totalExpected from loans l
-inner join users u on u.id = l.userID
-where l.disbursed_at is not null AND loan_balance > 0 AND (expected_amount - paid_amount) > 0
-)x
-) Y GROUP BY DSLP order by DSLP
- 
-
---select from b2c and insert to expenses for all non recorded transactions
-
-INSERT INTO expenses(amount, description, occasion, transaction_id, recipient, disbursed_at, created_at)
-SELECT transaction_amount, remarks, occasion, transaction_id, receiver_party_public_name,
-STR_TO_DATE(transaction_completed_datetime, '%d.%m.%Y %H:%i:%s'),
-created_at
-FROM mpesa_b2c
-WHERE occasion NOT IN (SELECT loanAccountMPesa FROM loans) AND transaction_id not in (SELECT transaction_id from expenses) AND result_code = 0;
+-- --get all loans for sacco for a given month
+-- SELECT loanPrincipal as principal_borrowed,total_loan_disburse as amount_disbursed,client_loan_total as total_owed,
+--        daily_amount_expected,loan_term,loanPurpose,loanAccountMPesa as loan_id,createdAt as date_applied,disbursed_at as date_disbursed
+-- FROM loans WHERE userID IN (SELECT id from users WHERE patner_id = 1) AND MONTH(DATE(disbursed_at)) = 1 AND YEAR(DATE(disbursed_at))=2025
+--
+-- --get all transactions for sacco loans disbursed on a given month
+-- SELECT FirstName,TransID,TransTime,TransAmount,BillRefNumber,ManualRefNumber FROM mpesa_c2b
+-- WHERE BillRefNumber IN (SELECT loanAccountMPesa FROM loans WHERE userID IN (SELECT id from users WHERE patner_id = 1) AND MONTH(DATE(TransTime)) = 7 AND YEAR(DATE(TransTime)) = 2025)
+--    OR ManualRefNumber IN (SELECT loanAccountMPesa FROM loans WHERE userID IN (SELECT id from users WHERE patner_id = 1) AND MONTH(DATE(TransTime)) =  7  AND YEAR(DATE(TransTime)) = 2025)
+-- AND MONTH(DATE(TransTime)) = 7 AND YEAR(DATE(TransTime)) = 2025
 
 
 
-  -- EXPENSES ANALYTICS
-SELECT  MONTHNAME (DATE(disbursed_at)) as month, SUM(amount) total_expenses FROM expenses group by month --totals per month
-SELECT amount,description,chanel,occasion,transaction_id,recipient,disbursed_at FROM expenses WHERE MONTH(DATE(disbursed_at)) = 6 --individual expenses every month
-SELECT expense_type, SUM(amount)as total_amount, COUNT(amount)as total_transactions from expenses GROUP BY expense_type ORDER BY total_amount DESC --
-SELECT expense_type, SUM(amount) as total_amount, COUNT(amount)as total_transactions from expenses WHERE MONTH(DATE(disbursed_at)) = 6 GROUP BY expense_type ORDER BY total_amount DESC --
- 
-
-  -- monthly loan performance (disbursements)
-    select
-    u.first_name, u.last_name,u.phone,l.loanAccountMPesa as Account,
-    l.loanPrincipal as Principal,
-    l.total_interest_amount as InterestAmount,l.loan_processing_fee as ProcessingFee,
-    l.ntsa_fee as BatteryFee,l.credit_life_insurance as Insurance,
-    l.total_mon_fee as MonitoringFee,l.total_loan_disburse as Disbursed,
-    l.client_loan_total as TotalLoan,l.loan_term as Term,
-    DATE(l.disbursed_at) as DisburseDate,
-    IFNULL(DATE((select MAX(created_at) from mpesa_c2b m2 where (l.loanAccountMPesa = m2.BillRefNumber or l.loanAccountMPesa = m2.ManualRefNumber))),'NO PAYMENT YET') as LastPaymentDate,
-    DATEDIFF(curdate(),
-    IFNULL((select MAX(created_at) from mpesa_c2b m2 where (l.loanAccountMPesa = m2.BillRefNumber or l.loanAccountMPesa = m2.ManualRefNumber)),l.disbursed_at)
-            )                                                                                                                     as DSLP,
-    DATEDIFF(now(),disbursed_at)                                                                                          as loanAge,
-    IF(l.loan_term < DATEDIFF(now(), disbursed_at), 'Overdue  Loan', 'Active Loan')                                       as Status,
-    l.daily_amount_expected                                                                                               as dailyExpected
-    from loans l
-    inner join users u on u.id = l.userID
-    where l.disbursed_at is not null AND MONTH(DATE(l.disbursed_at)) = 6
-
-    
-
-  --monthly performance (collections)
-   SELECT
-     m.TransID,
-     m.TransTime,
-     m.TransAmount,
-     m.BillRefNumber,
-     m.ManualRefNumber,
-     m.FirstName,
-     (l.client_loan_total - IFNULL(SUM(m.TransAmount), 0)) AS LoanBalance,
-     IFNULL(SUM(m.TransAmount), 0) * (l.interestPercentage / 100) AS InterestEarned,
-     DATE(l.disbursed_at) AS DisburseDate,
-     IFNULL(DATE(MAX(m2.created_at)), 'NO PAYMENT YET') AS LastPaymentDate,
-     DATEDIFF(CURDATE(), IFNULL(MAX(m2.created_at), l.disbursed_at)) AS DSLP,
-     DATEDIFF(NOW(), l.disbursed_at) AS loanAge,
-     IF(l.loan_term < DATEDIFF(NOW(), l.disbursed_at), 'Overdue Loan', 'Active Loan') AS Status,
-     IFNULL(SUM(m.TransAmount), 0) AS TotalPaid,
-     IF(l.loan_term < DATEDIFF(NOW(), l.disbursed_at), l.loan_term * l.daily_amount_expected, DATEDIFF(NOW(), l.disbursed_at) * l.daily_amount_expected) AS totalExpected,
-     l.daily_amount_expected AS dailyExpected,
-     FLOOR(IFNULL(SUM(m.TransAmount), 0) / l.daily_amount_expected) AS daysPaid
- FROM
-     mpesa_c2b m
- LEFT JOIN
-     loans l ON l.loanAccountMPesa = m.BillRefNumber OR l.loanAccountMPesa = m.ManualRefNumber
- LEFT JOIN
-     mpesa_c2b m2 ON l.loanAccountMPesa = m2.BillRefNumber OR l.loanAccountMPesa = m2.ManualRefNumber
- WHERE
-     MONTH(DATE(m.TransTime)) = 6
- GROUP BY
-     m.TransID,
-     m.TransTime,
-     m.TransAmount,
-     m.BillRefNumber,
-     m.ManualRefNumber,
-     m.FirstName,
-     l.client_loan_total,
-     l.interestPercentage,
-     l.disbursed_at,
-     l.loan_term,
-     l.daily_amount_expected;
- 
-   
-
-  --current loan standing as of today
-    select first_name,last_name,phone,group_id,sacco,Account,IF(LoanBalance > 0, 'PENDING COMPLETION', 'COMPLETED FULL PAYMENT') as GeneralLoanStanding,
-       CASE
-            WHEN TotalPaid = TotalExpected THEN 'AT PER'
-            WHEN TotalPaid > TotalExpected THEN 'OVER PAYMENT'
-            ELSE 'ARREAS'
-        END as CurrentLoanStanding,
-       IF(TotalPaid > totalExpected, TotalPaid - totalExpected, 0 ) as OverPayment,
-       IF(TotalPaid < totalExpected, totalExpected - TotalPaid, 0) as Arreas,
-       Principal,InterestAmount, ProcessingFee,BatteryFee,MonitoringFee,Disbursed,TotalLoan,Term,loanAge,LoanBalance,(totalExpected - TotalPaid) as BalanceToday,
-       DisburseDate,LastPaymentDate,DSLP,Status,TotalPaid,totalExpected,dailyExpected,daysPaid
-        from (
-        select
-        u.id,u.first_name, u.last_name,u.phone,u.group_id, (select name from partners WHERE id=u.patner_id) as sacco, l.loanAccountMPesa as Account,
-        l.loanPrincipal as Principal,l.interestPercentage as Interest,
-        l.total_interest_amount as InterestAmount,l.loan_processing_fee as ProcessingFee,
-        l.ntsa_fee as BatteryFee,
-        l.total_mon_fee as MonitoringFee,l.total_loan_disburse as Disbursed,
-        l.client_loan_total as TotalLoan,l.loan_term as Term,
-        (client_loan_total - IFNULL((select sum(TransAmount) from mpesa_c2b m where (l.loanAccountMPesa = m.BillRefNumber or l.loanAccountMPesa = m.ManualRefNumber)),0)) as LoanBalance,
-        DATE(l.disbursed_at) as DisburseDate,
-        IFNULL(DATE((select MAX(created_at) from mpesa_c2b m2 where (l.loanAccountMPesa = m2.BillRefNumber or l.loanAccountMPesa = m2.ManualRefNumber))),'NO PAYMENT YET') as LastPaymentDate,
-        DATEDIFF(curdate(),
-        IFNULL((select MAX(created_at) from mpesa_c2b m2 where (l.loanAccountMPesa = m2.BillRefNumber or l.loanAccountMPesa = m2.ManualRefNumber)),l.disbursed_at)
-        )                                                                                                                     as DSLP,
-        DATEDIFF(now(),disbursed_at)                                                                                          as loanAge,
-        IF(l.loan_term < DATEDIFF(now(), disbursed_at), 'Overdue  Loan', 'Active Loan')                                       as Status,
-        IFNULL((select sum(TransAmount) from mpesa_c2b m where (l.loanAccountMPesa = m.BillRefNumber or l.loanAccountMPesa = m.ManualRefNumber)),0) as TotalPaid,
-        IF(l.loan_term < DATEDIFF(now(), disbursed_at), l.loan_term * l.daily_amount_expected, DATEDIFF(now(), disbursed_at) * l.daily_amount_expected) as totalExpected,
-        l.daily_amount_expected                                                                                               as dailyExpected,
-        floor(IFNULL((select sum(TransAmount) from mpesa_c2b m where (l.loanAccountMPesa = m.BillRefNumber or l.loanAccountMPesa = m.ManualRefNumber)),0) / l.daily_amount_expected) as daysPaid
-        from loans l
-        inner join users u on u.id = l.userID
-        where l.disbursed_at is not null and u.id not in (1,2,3,4,5,6,7,8,13,14,15,33,482)
-        )x ORDER BY BalanceToday desc
-
- 
-
-
-
---get distribution of total number of loans taken
-SELECT total_loans_taken, count(total_loans_taken) as number_of_clients FROM (
-SELECT userID, count(userID) as total_loans_taken FROM loans GROUP BY UserID )X GROUP BY total_loans_taken
-
---loan distribution per branch
-SELECT
-    MONTH(DATE(disbursed_at)) AS month,
-    COUNT(l.id) AS total_loans,
-    SUM(CASE WHEN u.patner_id = 1 THEN 1 ELSE 0 END) AS Githurai,
-    SUM(CASE WHEN u.patner_id = 2 THEN 1 ELSE 0 END) AS Jiride,
-    SUM(CASE WHEN u.patner_id = 3 THEN 1 ELSE 0 END) AS Ekirapa,
-    SUM(CASE WHEN u.patner_id = 4 THEN 1 ELSE 0 END) AS Nairobi,
-    SUM(CASE WHEN u.patner_id = 5 THEN 1 ELSE 0 END) AS Njiru
-FROM loans l
-    JOIN users u ON u.id = l.userID
-WHERE YEAR(DATE(l.disbursed_at)) = YEAR(DATE(CURDATE()))
-GROUP BY month
-ORDER BY month;
-
-
---full monthly disbursements loan book for investors sharing
-select id as userId,Account,principal_applied,disbursed_amount,loan_processing_fee,battery_loan,tracking_fee,insuarance_fee, TotalLoan,Term,DisburseDate,LastPaymentDate,DSLP,totalExpected,TotalPaid,LoanBalance,
-       IF(TotalPaid > totalExpected, 0, totalExpected - TotalPaid) as variance,dailyExpected
-from (
-         SELECT
-             l.loanPrincipal as principal_applied,l.total_loan_disburse as disbursed_amount,l.loan_processing_fee,l.ntsa_fee as battery_loan, l.total_mon_fee as tracking_fee,l.credit_life_insurance as insuarance_fee,
-             u.id,l.loanAccountMPesa as Account, l.client_loan_total as TotalLoan,l.loan_term as Term,
-             (client_loan_total - IFNULL((select sum(TransAmount) from mpesa_c2b m where (l.loanAccountMPesa = m.BillRefNumber or l.loanAccountMPesa = m.ManualRefNumber)),0)) as LoanBalance,
-
-             DATE(l.disbursed_at) as DisburseDate,
-     IFNULL(DATE((select MAX(created_at) from mpesa_c2b m2 where (l.loanAccountMPesa = m2.BillRefNumber or l.loanAccountMPesa = m2.ManualRefNumber))),'NO PAYMENT YET') as LastPaymentDate,
-     DATEDIFF(curdate(),
-              IFNULL((select MAX(created_at) from mpesa_c2b m2 where (l.loanAccountMPesa = m2.BillRefNumber or l.loanAccountMPesa = m2.ManualRefNumber)),l.disbursed_at)
-         )  as DSLP,
-
-     IFNULL((select sum(TransAmount) from mpesa_c2b m where (l.loanAccountMPesa = m.BillRefNumber or l.loanAccountMPesa = m.ManualRefNumber)),0) as TotalPaid,
-     IF(l.loan_term < DATEDIFF(now(), disbursed_at), l.loan_term * l.daily_amount_expected, DATEDIFF(now(), disbursed_at) * l.daily_amount_expected) as totalExpected,
-     l.daily_amount_expected  as dailyExpected
-
-    from loans l
-                        inner join users u on u.id = l.userID
-where u.id not in (1,2,3,4,5,6,7,8,13,14,15,33,482)
-  AND l.disbursed_at is not null
-  AND MONTH(DATE(l.disbursed_at)) = 11
-    )x
-
---    Monthly collection report for investors
-SET @month_number = 11;
-
-SELECT a.Date,
-       des.daily_expected,
-       CEILING(SUM(TransTotal)) AS collection_recieved
-FROM (
-         SELECT LAST_DAY(CONCAT(YEAR(NOW()), '-', @month_number, '-01'))
-                    - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY AS Date,
-           0 AS TransTotal
-FROM (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS a
-    CROSS JOIN (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS b
-    CROSS JOIN (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
-    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS c
-
-UNION ALL
-
-SELECT DATE(TransTime) AS Date,
-    SUM(TransAmount) AS TransTotal
-FROM mpesa_c2b
-WHERE MONTH(TransTime) = @month_number
-  AND YEAR(TransTime) = YEAR(NOW())
-  AND TransactionType = 'Pay Bill'
-  AND TransAmount < 50000
-GROUP BY DATE(TransTime)
-    ) a
-    LEFT JOIN daily_expected_summary AS des
-ON a.Date = des.date
-WHERE a.Date BETWEEN CONCAT(YEAR(NOW()), '-', @month_number, '-01')
-  AND LAST_DAY(CONCAT(YEAR(NOW()), '-', @month_number, '-01'))
-GROUP BY a.Date
-HAVING a.Date <= CURDATE()
-ORDER BY a.Date;
 
 
 
@@ -282,16 +61,10 @@ GROUP BY
     l.userID ORDER BY principal desc, repeats desc
     limit 10
 
--- first month loan performance
-SELECT userID,loanPrincipal as principal,loan_term,(DATEDIFF(curdate(),DATE(disbursed_at))) as loan_age,daily_amount_expected,client_loan_total as future_value,
-       IFNULL(paid_amount,0) as paid_amount, expected_amount,(IFNULL(expected_amount,0) - IFNULL(paid_amount,0)) as balance ,(paid_amount / loans.expected_amount) as repayment_rate, loanPurpose, disbursed_at as date_disbursed
-FROM loans WHERE MONTH(disbursed_at) = 1 AND YEAR(disbursed_at) = 2025 ORDER BY balance desc
-
 -- get all overdue loans + assets
 SELECT loanAccountMPesa as account, u.first_name, u.last_name,ca.model, ca.brand, ca.l_plate,ca.make, u.group_id, u.patner_id,loanPrincipal as principal, client_loan_total as total_loan, daily_amount_expected, loan_term, paymentDate as due_date,
     Date(disbursed_at) as disbused_at,paid_amount, expected_amount, loan_balance
 FROM loans LEFT JOIN users u ON loans.userID = u.id LEFT JOIN  client_assets ca ON u.id = ca.user_id WHERE loan_balance > 0 and DATE(paymentDate) < Date(curdate()) AND userID NOT IN (1,2,3,4,5,6,7,8,10,13,14,15,33,482)
-
 
 -- get all users and assets
 SELECT loanAccountMPesa as account, u.first_name, u.last_name,u.phone,ca.model, ca.brand, ca.l_plate,ca.make, u.group_id, u.patner_id, paymentDate as due_date
@@ -685,5 +458,19 @@ WHERE
 GROUP BY officer
 ORDER BY amount_collected_from_contacted_clients DESC;
 
--- bulk insert wages  excel
-="INSERT INTO temp_expense_requests(category_id, description, reciever_type, reciever, amount, status, created_at) VALUES(1, '" & B2 & " December  salary', 'PHONENUMBER', '" & E2 & "', " & J2 & ", 'PENDING_APPROVAL', NOW());"
+-- get earnings for agents
+SELECT r.first_name, r.middle_name,r.last_name,r.phone,COUNT(l.id) AS total_referees_with_loans, COUNT(l.id) * 250 AS total_amount_earned
+FROM users r
+         JOIN users u
+              ON u.reffererd_by = r.refferal_id
+         LEFT JOIN loans l
+                   ON l.userID = u.id
+                       AND MONTH(l.createdAt) = 2
+    AND YEAR(l.createdAt)  = 2026
+WHERE r.id IN (
+    SELECT user_id
+    FROM user_roles
+    WHERE usertype = 'AMBOSSODOR'
+    )
+GROUP BY r.id, r.first_name,r.middle_name,r.last_name,r.phone
+ORDER BY total_amount_earned DESC;

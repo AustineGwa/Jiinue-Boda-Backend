@@ -32,25 +32,16 @@ public class ExpensesService {
 
     public List<PendingExpense> getAllExpenses(String startDate, String endDate) {
 
-        /*
-         SELECT id,(select category_name from expense_categories WHERE expense_categories.category_id = temp_expense_requests.category_id) as category, description, reciever_type, reciever,
-         account_number, amount, created_at FROM temp_expense_requests
-         WHERE status='APPROVED' AND deleted_at is null
-
-         UNION ALL
-
-        SELECT id,(select category_name from expense_categories WHERE expense_categories.category_id = expenses.expense_category) as category, description, 'N/A' as  reciever_type, recipient as reciever,
-                'N/A' as account_number, amount, created_at FROM expenses WHERE MONTH(DATE(created_at)) = 6 AND YEAR(created_at) = 2025
-         */
 
         String sql = """
                   SELECT id,description, reciever_type, reciever, account_number, amount, created_at,
-                                         (SELECT category_name FROM expense_categories_2 WHERE id= main_category_id) as main_category,
-                                         (SELECT subcategory_name FROM expense_subcategories_2 WHERE id= subcategory_id) as sub_category,
-                                         (SELECT minor_subcategory_name FROM expense_minor_subcategories WHERE id= minor_subcategory_id) as minor_subcategory,
-                                         (SELECT transaction_id FROM mpesa_b2c WHERE occasion = CONCAT('EXPENSE',temp_expense_requests.id)) as mpesa_refference
-                                  FROM temp_expense_requests
-                                  WHERE status='APPROVED' AND  DATE(created_at) BETWEEN DATE(?) AND DATE(?) AND deleted_at is null ORDER BY created_at DESC
+                                                           (SELECT category_name FROM expense_categories_2 WHERE id= main_category_id) as main_category,
+                                                           (SELECT subcategory_name FROM expense_subcategories_2 WHERE id= subcategory_id) as sub_category,
+                                                           (SELECT minor_subcategory_name FROM expense_minor_subcategories WHERE id= minor_subcategory_id) as minor_subcategory,
+                                                           (SELECT transaction_id FROM mpesa_b2c WHERE occasion = CONCAT('EXPENSE',temp_expense_requests.id) AND result_code = 0  LIMIT 1) as mpesa_refference
+                                                    FROM temp_expense_requests
+                                                    WHERE status='APPROVED' AND  DATE(created_at) BETWEEN DATE('2026-02-01') AND DATE('2026-02-28')
+                                                      AND deleted_at is null ORDER BY created_at DESC
                 """;
 
         return jdbcTemplateOne.query(sql,(rs,i)->setPendingExpenses(rs),startDate,endDate);
