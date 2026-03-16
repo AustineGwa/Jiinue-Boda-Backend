@@ -19,11 +19,11 @@ public class SmsCronjobs {
         this.collectionsService = collectionsService;
     }
 
-    @Scheduled(cron = "0 0 20 * * *") //every 8 pm
-    public void sendDailyPaymentReminder(){
-        List<LoansByAge> pendingLoanUserDetailList = collectionsService.getLoansByVariance(0);
-        smsService.sendDailyReminder(pendingLoanUserDetailList);
-    }
+//    @Scheduled(cron = "0 0 20 * * *") //every 8 pm
+//    public void sendDailyPaymentReminder(){
+//        List<LoansByAge> pendingLoanUserDetailList = collectionsService.getLoansByVariance(0);
+//        smsService.sendDailyReminder(pendingLoanUserDetailList);
+//    }
 
     /*
         The cron expression 0 0 07 * * consists of five fields:
