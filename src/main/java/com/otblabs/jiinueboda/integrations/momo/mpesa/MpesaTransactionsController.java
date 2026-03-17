@@ -1,6 +1,6 @@
 package com.otblabs.jiinueboda.integrations.momo.mpesa;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.B2cResultNotification;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.Result;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.c2b.models.C2BNotification;
@@ -8,7 +8,6 @@ import com.otblabs.jiinueboda.jiinue.models.LoanPayeeDetail;
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.Signatory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

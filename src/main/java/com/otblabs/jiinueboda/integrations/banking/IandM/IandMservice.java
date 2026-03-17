@@ -1,7 +1,6 @@
 package com.otblabs.jiinueboda.integrations.banking.IandM;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.*;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.auth.AuthToken;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.collections.CustomerValidationRequest;
@@ -93,7 +92,7 @@ public class IandMservice {
         StrToEnc = StrToEnc + TranCCY;
 
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
+
             String jsonPayload = objectMapper.writeValueAsString(paymentRequest);
 
             OkHttpClient httpClient = new OkHttpClient();
@@ -147,11 +146,6 @@ public class IandMservice {
                 return mapper.readValue(response.body().string(),InitB2cResponse.class);
             }
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-
     }
 
     public String getAuthToken(String consumerKey, String consumerSecret) throws Exception {
@@ -160,7 +154,6 @@ public class IandMservice {
         AuthToken authToken;
 
 
-        try {
 
             OkHttpClient httpClient = new OkHttpClient();
             Request request = new Request.Builder()
@@ -180,10 +173,7 @@ public class IandMservice {
 
             }
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
+
 
       return authToken.getAccessToken();
     }
@@ -265,7 +255,7 @@ public class IandMservice {
         return ciph.doFinal(data);
     }
 
-    public CustomerValidationResponse getPaymentValidation(String data, int appId) throws JsonProcessingException {
+    public CustomerValidationResponse getPaymentValidation(String data, int appId) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         CustomerValidationRequest request = objectMapper.readValue(data, CustomerValidationRequest.class);

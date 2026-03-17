@@ -1,7 +1,7 @@
 package com.otblabs.jiinueboda.security.springsecurity.jwt;
 
 import com.auth0.jwt.JWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.otblabs.jiinueboda.auth.Credentials;
 import com.otblabs.jiinueboda.security.SecurityConstants;
 import jakarta.servlet.FilterChain;

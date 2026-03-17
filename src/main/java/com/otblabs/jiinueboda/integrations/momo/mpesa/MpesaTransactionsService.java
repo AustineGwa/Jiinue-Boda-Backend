@@ -1,7 +1,6 @@
 package com.otblabs.jiinueboda.integrations.momo.mpesa;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.otblabs.jiinueboda.integrations.IncomingPaymentConfirmation;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.*;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.buygoods.models.*;
@@ -11,7 +10,6 @@ import com.otblabs.jiinueboda.integrations.momo.mpesa.paybill.*;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.pull.MResponse;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.pull.PullRequest;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.pull.PullResponse;
-import com.otblabs.jiinueboda.investors.InvestmentManagementService;
 import com.otblabs.jiinueboda.jiinue.models.UserLoanDetail;
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.models.Signatory;
@@ -26,6 +24,7 @@ import org.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import javax.crypto.Cipher;
 import java.io.File;
@@ -854,7 +853,7 @@ public class MpesaTransactionsService {
 
     }
 
-    Acknowledgement postPullTransactions(String pullResponse, int appId) throws JsonProcessingException {
+    Acknowledgement postPullTransactions(String pullResponse, int appId)  {
 
         ObjectMapper objectMapper = new ObjectMapper();
         PullResponse data = objectMapper.readValue(pullResponse, PullResponse.class);

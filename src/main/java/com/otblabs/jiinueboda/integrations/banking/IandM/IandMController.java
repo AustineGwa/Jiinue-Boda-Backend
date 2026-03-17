@@ -1,6 +1,6 @@
 package com.otblabs.jiinueboda.integrations.banking.IandM;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.MpesaBankRequestData;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.MpesaBankResponseData;
 import org.springframework.http.ResponseEntity;

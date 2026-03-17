@@ -1,6 +1,6 @@
 package com.otblabs.jiinueboda.integrations.banking.coop;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.otblabs.jiinueboda.integrations.banking.coop.core.CoopRequestBody;
 import com.otblabs.jiinueboda.integrations.banking.coop.core.CoopResponseBody;
 import com.otblabs.jiinueboda.integrations.banking.coop.mpesa.Destination;
@@ -9,14 +9,11 @@ import com.otblabs.jiinueboda.integrations.banking.coop.mpesa.Source;
 import com.otblabs.jiinueboda.utility.Functions;
 import okhttp3.*;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.codec.Base64;
+//import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class CoopService {
@@ -84,7 +81,7 @@ public class CoopService {
     private String getAuthToken(String appKeySecret) throws Exception {
         byte[] bytes = appKeySecret.getBytes("ISO-8859-1");
 
-        String auth = Arrays.toString(Base64.encode(bytes));
+        String auth = Base64.getEncoder().encodeToString(bytes);
 
         OkHttpClient client = new OkHttpClient();
 

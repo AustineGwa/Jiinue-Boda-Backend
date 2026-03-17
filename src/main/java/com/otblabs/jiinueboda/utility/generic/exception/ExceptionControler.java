@@ -1,7 +1,5 @@
 package com.otblabs.jiinueboda.utility.generic.exception;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ public class ExceptionControler {
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage()));
     }
 
-    @ExceptionHandler(JsonParseException.class)
+
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleJsonParseExceptionException() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -89,7 +88,7 @@ public class ExceptionControler {
             if (ifx.getTargetType() != null && ifx.getTargetType().isEnum()) {
                 errorDetails = String.format(
                         "Invalid value: '%s' for the field: '%s'. The value must be one of: %s.", ifx.getValue(),
-                        ifx.getPath().get(ifx.getPath().size() - 1).getFieldName(),
+                        ifx.getPath().get(ifx.getPath().size() - 1).getDescription(),
                         Arrays.toString(ifx.getTargetType().getEnumConstants()));
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -101,7 +100,7 @@ public class ExceptionControler {
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage()));
     }
 
-    //
+
     @ExceptionHandler(NumberFormatException.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleNumberFormatException(NumberFormatException exception) {

@@ -1,6 +1,6 @@
 //package com.otblabs.fintech.sms.ampletech;
 //
-//import com.fasterxml.jackson.databind.ObjectMapper;
+//import tools.jackson.databind.ObjectMapper;
 //import okhttp3.*;
 //import org.springframework.jdbc.core.JdbcTemplate;
 //import org.springframework.scheduling.annotation.Async;
@@ -158,10 +158,12 @@
 
 package com.otblabs.jiinueboda.sms.providers.ampletech;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import okhttp3.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 
 @Service
