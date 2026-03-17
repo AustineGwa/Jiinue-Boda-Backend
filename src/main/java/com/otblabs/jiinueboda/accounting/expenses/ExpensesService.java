@@ -65,6 +65,38 @@ public class ExpensesService {
                 createExpense.getAmount());
     }
 
+    public int updateExpenseDetails(CreateExpense createExpense, int expenseId) throws Exception {
+
+        String createExpenseSql = """
+                UPDATE temp_expense_requests SET main_category_id=?,subcategory_id=?,minor_subcategory_id=?, description=?,
+                                                 reciever_type=?, reciever=?, account_number=?, amount=? WHERE id=?
+                """;
+
+        return jdbcTemplateOne.update(createExpenseSql,
+                createExpense.getMainMainCategoryId(),
+                createExpense.getSubCategoryId(),
+                createExpense.getMinorSubcategoryId(),
+                createExpense.getDescription(),
+                createExpense.getRecieverType().name(),
+                createExpense.getReciever(),
+                createExpense.getAccountNumber(),
+                createExpense.getAmount(),
+                expenseId);
+    }
+
+    public int updateExpenseCategory(CreateExpense createExpense, int expenseId) throws Exception {
+
+        String createExpenseSql = """
+                UPDATE temp_expense_requests SET main_category_id=?,subcategory_id=?,minor_subcategory_id=? WHERE id=?
+                """;
+
+        return jdbcTemplateOne.update(createExpenseSql,
+                createExpense.getMainMainCategoryId(),
+                createExpense.getSubCategoryId(),
+                createExpense.getMinorSubcategoryId(),
+                expenseId);
+    }
+
     public List<PendingExpense> getAllPendingExpenses() throws Exception{
         String sql = """
         SELECT id, description, reciever_type, reciever, account_number, amount, created_at

@@ -44,6 +44,26 @@ public class ExpensesController {
         }
     }
 
+    @PostMapping("/update/{expenseID}")
+    public ResponseEntity<Object> updateExpenseDetails(@RequestBody CreateExpense createExpense, @PathVariable int expenseID) {
+        try {
+            return  ResponseEntity.ok(expensesService.updateExpenseDetails(createExpense, expenseID));
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.unprocessableEntity().build();
+        }
+    }
+
+    @PostMapping("/update/category/{expenseID}")
+    public ResponseEntity<Object> updateExpenseCategory(@RequestBody CreateExpense createExpense, @PathVariable int expenseID) {
+        try {
+            return  ResponseEntity.ok(expensesService.updateExpenseCategory(createExpense, expenseID));
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.unprocessableEntity().build();
+        }
+    }
+
     @GetMapping("/all/{startDate}/{endDate}")
     public ResponseEntity<Object> getAllExpenses(@PathVariable String startDate, @PathVariable String endDate){
         try {
