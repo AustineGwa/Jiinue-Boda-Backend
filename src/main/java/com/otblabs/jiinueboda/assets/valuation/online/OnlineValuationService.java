@@ -47,7 +47,6 @@ public class OnlineValuationService {
     public OnlineAssetValuation create(ValuationRequest req, String user) {
 
         SystemUser systemUser = userService.getByEmailOrPhone(user);
-
         OnlineAssetValuation v = mapRequestToModel(req);
         v.setTechnicianId(systemUser.getId());
         computeScores(v);
