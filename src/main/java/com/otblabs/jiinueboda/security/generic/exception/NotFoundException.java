@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.utility.generic.exception;
+package com.otblabs.jiinueboda.security.generic.exception;
 
 public final class NotFoundException extends RuntimeException {
 

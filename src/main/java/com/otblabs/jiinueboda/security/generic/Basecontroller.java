@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.utility.generic;
+package com.otblabs.jiinueboda.security.generic;
 
 import org.springframework.http.ResponseEntity;
 

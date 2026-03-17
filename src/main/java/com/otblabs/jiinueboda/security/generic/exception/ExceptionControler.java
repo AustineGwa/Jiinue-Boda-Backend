@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.utility.generic.exception;
+package com.otblabs.jiinueboda.security.generic.exception;
 
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;

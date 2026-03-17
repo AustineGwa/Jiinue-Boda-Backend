@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.utility.generic.exception;
+package com.otblabs.jiinueboda.security.generic.exception;
 
 public class BadRequestException extends RuntimeException{
     private static final long serialVersionUID = 1L;

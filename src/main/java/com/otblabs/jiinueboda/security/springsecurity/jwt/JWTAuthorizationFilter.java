@@ -10,8 +10,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import com.otblabs.jiinueboda.auth.TokenInvalidationService;
 import com.otblabs.jiinueboda.security.SecurityConstants;
-import com.otblabs.jiinueboda.utility.generic.exception.ErrorResponse;
-import com.otblabs.jiinueboda.utility.generic.exception.UnauthorizedException;
+import com.otblabs.jiinueboda.security.generic.exception.ErrorResponse;
+import com.otblabs.jiinueboda.security.generic.exception.UnauthorizedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import tools.jackson.databind.ObjectMapper;

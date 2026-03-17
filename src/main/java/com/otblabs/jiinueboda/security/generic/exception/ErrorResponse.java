@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.utility.generic.exception;
+package com.otblabs.jiinueboda.security.generic.exception;
 
 import lombok.Data;
 
