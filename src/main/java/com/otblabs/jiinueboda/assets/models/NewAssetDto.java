@@ -12,12 +12,12 @@ public class NewAssetDto {
     private String brand;
     private String make;
     private String model;
-    private String Lplate;
+    private String lplate;
     private String chassis;
     private String engineNumber;
     private int rating;
     private int yom;
     private String color;
     private String odometer;
-    private String Acondition;
+    private String acondition;
 }
