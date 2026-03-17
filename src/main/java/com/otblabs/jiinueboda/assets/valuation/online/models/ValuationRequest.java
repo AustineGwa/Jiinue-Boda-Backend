@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 @ToString
 public class ValuationRequest {
     private Integer assetId;
-    private int technicianId;
     private Integer enginePerformance;
     private Integer gearbox;
     private Integer suspension;
@@ -38,6 +37,6 @@ public class ValuationRequest {
     private Integer accItem3;
     private Integer accItem4;
     private Integer accItem5;
-    private int assignedValue;
+    private Integer assignedValue;
     private String remarks;
 }

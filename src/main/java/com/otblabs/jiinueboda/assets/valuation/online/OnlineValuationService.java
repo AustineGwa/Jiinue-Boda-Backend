@@ -278,8 +278,6 @@ public class OnlineValuationService {
         OnlineAssetValuation v = new OnlineAssetValuation();
 
         v.setAssetId        (req.getAssetId());
-        v.setTechnicianId   (req.getTechnicianId());
-
         v.setEnginePerformance(req.getEnginePerformance());
         v.setGearbox(req.getGearbox());
         v.setSuspension(req.getSuspension());

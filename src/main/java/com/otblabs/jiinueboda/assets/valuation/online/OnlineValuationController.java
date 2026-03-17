@@ -29,7 +29,7 @@ public class OnlineValuationController {
         System.out.println("VALUATION REQUEST "+ request.toString());
         try{
             OnlineAssetValuation saved = service.create(request, principal.getName());
-            assetsService.updateEvalStatusOnAsset(request.getTechnicianId(), request.getAssetId());
+            assetsService.updateEvalStatusOnAsset(saved.getTechnicianId(), request.getAssetId());
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
 
         }catch (Exception exception){
