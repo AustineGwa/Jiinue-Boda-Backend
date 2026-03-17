@@ -4,10 +4,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -15,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ValuationRequest {
 
     @NotNull

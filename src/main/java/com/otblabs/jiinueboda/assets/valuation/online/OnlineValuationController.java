@@ -26,6 +26,8 @@ public class OnlineValuationController {
 
     @PostMapping("/create-new-valuation")
     public ResponseEntity<OnlineAssetValuation> create(@Valid @RequestBody ValuationRequest request, Principal principal) {
+
+        System.out.println("VALUATION REQUEST "+ request.toString());
         try{
             OnlineAssetValuation saved = service.create(request, principal.getName());
             assetsService.updateEvalStatusOnAsset(request.getTechnicianId(), request.getAssetId());
