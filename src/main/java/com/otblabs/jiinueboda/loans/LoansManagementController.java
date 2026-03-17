@@ -40,11 +40,6 @@ public class LoansManagementController {
             return ResponseEntity.unprocessableEntity().body("There is no valid loan agreement found");
         }
 
-//        //check for availability of both 2 guarantors
-//        if(newLoanRequest.getGuarantor1Phone() == null || newLoanRequest.getGuarantor2Phone() == null){
-//            return ResponseEntity.unprocessableEntity().body("Please fill all guarantors");
-//        }
-
         //check loan purpose
         if(newLoanRequest.getLoanPurpose().equals("")){
             return ResponseEntity.unprocessableEntity().body("Please fill a loan purpose");
