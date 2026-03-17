@@ -14,45 +14,30 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 @ToString
 public class ValuationRequest {
-
     private Integer assetId;
     private int technicianId;
-
-    // ── Section 1 – Engine & Mechanical (0–3)
-    @Min(0) @Max(3) private Integer enginePerformance;
-    @Min(0) @Max(3) private Integer gearbox;
-    @Min(0) @Max(3) private Integer suspension;
-    @Min(0) @Max(3) private Integer braking;
-
-
-    // ── Section 2 – Wiring & GPS (0–3)
-    @Min(0) @Max(3) private Integer wiringHarness;
-    @Min(0) @Max(3) private Integer batteryHealth;
-    @Min(0) @Max(3) private Integer chargingSystem;
-    @Min(0) @Max(3) private Integer wiringNeatness;
-    @Min(0) @Max(3) private Integer electricalFunc;
-    @Min(0) @Max(3) private Integer gpsFeasibility;
-
-    // ── Section 3 – Tyres (0–3)
-    @Min(0) @Max(3) private Integer frontTyre;
-    @Min(0) @Max(3) private Integer rearTyre;
-
-    // ── Section 4 – Body & Frame (0–3)
-    @Min(0) @Max(3) private Integer frameAlignment;
-    @Min(0) @Max(3) private Integer fuelTank;
-    @Min(0) @Max(3) private Integer bodyPanels;
-    @Min(0) @Max(3) private Integer paintCondition;
-    @Min(0) @Max(3) private Integer generalAppear;
-
-    // ── Section 5 – Accessories (0–2)
-    @Min(0) @Max(2) private Integer accSideMirrors;
-    @Min(0) @Max(2) private Integer accCrashBars;
-    @Min(0) @Max(2) private Integer accItem3;
-    @Min(0) @Max(2) private Integer accItem4;
-    @Min(0) @Max(2) private Integer accItem5;
-
-
+    private Integer enginePerformance;
+    private Integer gearbox;
+    private Integer suspension;
+    private Integer braking;
+    private Integer wiringHarness;
+    private Integer batteryHealth;
+    private Integer chargingSystem;
+    private Integer wiringNeatness;
+    private Integer electricalFunc;
+    private Integer gpsFeasibility;
+    private Integer frontTyre;
+    private Integer rearTyre;
+    private Integer frameAlignment;
+    private Integer fuelTank;
+    private Integer bodyPanels;
+    private Integer paintCondition;
+    private Integer generalAppear;
+    private Integer accSideMirrors;
+    private Integer accCrashBars;
+    private Integer accItem3;
+    private Integer accItem4;
+    private Integer accItem5;
     private int assignedValue;
-
     private String remarks;
 }
