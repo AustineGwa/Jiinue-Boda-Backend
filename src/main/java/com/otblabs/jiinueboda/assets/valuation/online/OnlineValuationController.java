@@ -3,7 +3,6 @@ package com.otblabs.jiinueboda.assets.valuation.online;
 import com.otblabs.jiinueboda.assets.AssetsService;
 import com.otblabs.jiinueboda.assets.valuation.online.models.OnlineAssetValuation;
 import com.otblabs.jiinueboda.assets.valuation.online.models.ValuationRequest;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 
-@RestController
 @RequestMapping("/online-valuation")
+@RestController
 public class OnlineValuationController {
 
     private final OnlineValuationService service;
