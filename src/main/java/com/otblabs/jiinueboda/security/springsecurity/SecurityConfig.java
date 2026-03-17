@@ -73,6 +73,7 @@ public class SecurityConfig {
                             "/users/create/*"
                     ).permitAll()
                     .anyRequest().authenticated()
+
             )
 
             // Stateless session
@@ -89,30 +90,27 @@ public class SecurityConfig {
     return http.build();
   }
 
-//  // CORS filter for all requests
-//  @Bean
-//  public FilterRegistrationBean<CorsFilter> corsFilter() {
-//    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//    CorsConfiguration config = new CorsConfiguration();
-//    config.setAllowCredentials(true);
-//    config.addAllowedOriginPattern("*");
-//    config.addAllowedHeader("*");
-//    config.addAllowedMethod("*");
-//    source.registerCorsConfiguration("/**", config);
-//    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-//    bean.setOrder(0);
-//    return bean;
-//  }
-
-  // CORS configuration source
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
+  public FilterRegistrationBean corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("*");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("*");
+    source.registerCorsConfiguration("/**", config);
+    FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+    bean.setOrder(0);
+    return bean;
+  }
+
+  CorsConfigurationSource corsConfigurationSource() {
+    final var configuration = new CorsConfiguration();
     configuration.addAllowedOriginPattern("*");
     configuration.setAllowedMethods(Arrays.asList("*"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setExposedHeaders(Arrays.asList("*"));
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    final var source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
