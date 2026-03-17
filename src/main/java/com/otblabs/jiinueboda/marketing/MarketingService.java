@@ -5,8 +5,10 @@ import com.otblabs.jiinueboda.marketing.models.LeadFollowUp;
 import com.otblabs.jiinueboda.marketing.models.LeadsComment;
 import com.otblabs.jiinueboda.marketing.models.MarketingLead;
 import com.otblabs.jiinueboda.marketing.models.MarketingQuestionaire;
+import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
+import com.otblabs.jiinueboda.utility.Functions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -27,10 +29,12 @@ public class MarketingService {
 
     private final JdbcTemplate jdbcTemplateOne;
     private final UserService userService;
+    private final SmsService smsService;
 
-    public MarketingService(JdbcTemplate jdbcTemplateOne, UserService userService) {
+    public MarketingService(JdbcTemplate jdbcTemplateOne, UserService userService, SmsService smsService) {
         this.jdbcTemplateOne = jdbcTemplateOne;
         this.userService = userService;
+        this.smsService = smsService;
     }
 
 
@@ -42,20 +46,19 @@ public class MarketingService {
         // 1. Insert Lead
         String insertLeadSql = """
         INSERT INTO marketing_leads (
-            group_id,
-            user_name,
-            phone_number,
-            channel_id,
-            campaign_id,
-            agent_id,
-            referral_code,
-            branch_id,
-            notes,
-            current_stage,
-            created_by,
-            created_at
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    group_id,
+                    user_name,
+                    phone_number,
+                    channel_id,
+                    campaign_id,
+                    agent_id,
+                    branch_id,
+                    notes,
+                    current_stage,
+                    created_by,
+                    created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
     """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -64,15 +67,14 @@ public class MarketingService {
             PreparedStatement ps = connection.prepareStatement(insertLeadSql, Statement.RETURN_GENERATED_KEYS);
             ps.setObject(1, lead.getGroupId());
             ps.setString(2, lead.getUserName());
-            ps.setString(3, lead.getPhone());
+            ps.setString(3, Functions.formatPhoneNumber(lead.getPhone()));
             ps.setObject(4, lead.getChannelId());
             ps.setObject(5, lead.getCampaignId());
             ps.setObject(6, lead.getAgentId());
-            ps.setString(7, lead.getReferralCode());
-            ps.setObject(8, lead.getBranchId());
-            ps.setString(9, lead.getNotes());
-            ps.setString(10, "PROSPECT"); // current stage
-            ps.setLong(11, systemUser.getId());
+            ps.setObject(7, lead.getBranchId());
+            ps.setString(8, lead.getNotes());
+            ps.setString(9, "PROSPECT");
+            ps.setLong(10, systemUser.getId());
             return ps;
         }, keyHolder);
 
@@ -99,6 +101,8 @@ public class MarketingService {
                 1, // PROSPECT_CREATED
                 systemUser.getId()
         );
+
+        smsService.sendUserWelcomeMessage(lead.getUserName(), Functions.formatPhoneNumber(lead.getPhone()));
 
         return leadId.intValue();
     }

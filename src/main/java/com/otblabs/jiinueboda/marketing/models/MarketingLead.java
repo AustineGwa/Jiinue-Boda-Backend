@@ -16,7 +16,6 @@ public class MarketingLead {
     private int channelId;
     private int campaignId;
     private int agentId;
-    private String referralCode;
     private int branchId;
     private String notes;
 }

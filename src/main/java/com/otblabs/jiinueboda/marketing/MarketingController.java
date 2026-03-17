@@ -30,10 +30,10 @@ public class MarketingController {
             return ResponseEntity.badRequest().body("Phone number is required");
         }
 
-        SystemUser existingUser = userService.getByEmailOrPhone(marketingLead.getPhone());
+        SystemUser existingUser = userService.getByEmailOrPhone(Functions.formatPhoneNumber(marketingLead.getPhone()));
         if (existingUser != null) {
             return ResponseEntity.unprocessableEntity()
-                    .body("Phone number already exists, please login to your account");
+                    .body("A user with this phone number already exists, please proceed to their account");
         }
 
         try {
@@ -41,7 +41,7 @@ public class MarketingController {
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Failed to create lead");
+            return ResponseEntity.internalServerError().body("Failed to create lead "+e.getMessage());
         }
     }
 

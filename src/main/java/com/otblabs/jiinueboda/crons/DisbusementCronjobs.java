@@ -23,29 +23,29 @@ public class DisbusementCronjobs {
         this.fuelLoanService = fuelLoanService;
     }
 
-    @Scheduled(fixedRate = 1000) //every second
-    public void disburseLoans(){
-        List<Loan> pendingDisbursments = lendingService.getAllPendingDisbursements();
-        pendingDisbursments.forEach(loan->{
-
-            try {
-
-                if(investmentManagementService.investorDisburse(loan)){
-                    lendingService.setLoanDisbursementInitiated(loan.getLoanAccountMpesa());
-                }
-
-                try {
-                    B2CRequestResponse b2CRequestResponse = lendingService.disburseLoan(loan);
-                }catch (Exception exception){
-                    exception.printStackTrace();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        });
-    }
+//    @Scheduled(fixedRate = 1000) //every second
+//    public void disburseLoans(){
+//        List<Loan> pendingDisbursments = lendingService.getAllPendingDisbursements();
+//        pendingDisbursments.forEach(loan->{
+//
+//            try {
+//
+//                if(investmentManagementService.investorDisburse(loan)){
+//                    lendingService.setLoanDisbursementInitiated(loan.getLoanAccountMpesa());
+//                }
+//
+//                try {
+//                    B2CRequestResponse b2CRequestResponse = lendingService.disburseLoan(loan);
+//                }catch (Exception exception){
+//                    exception.printStackTrace();
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//        });
+//    }
 
     @Scheduled(fixedRate = 60 * 60 * 1000) //every 1 hour
     public void checkFailedInvestorRepaymentsEntry(){
