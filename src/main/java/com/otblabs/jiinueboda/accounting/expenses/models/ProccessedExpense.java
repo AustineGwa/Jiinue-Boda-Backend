@@ -1,13 +1,15 @@
 package com.otblabs.jiinueboda.accounting.expenses.models;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class PendingExpense {
+public class ProccessedExpense {
     private int id;
     private int amount;
     private String description;
@@ -15,7 +17,8 @@ public class PendingExpense {
     private String reciever;
     private String accountNumber;
     private String createdAt;
-    private int mainCategory;
-    private int subCategory;
-    private int minorSubCategory;
+    private String mainCategory;
+    private String subCategory;
+    private String minorSubCategory;
+    private String mpesaRefferenceCode;
 }

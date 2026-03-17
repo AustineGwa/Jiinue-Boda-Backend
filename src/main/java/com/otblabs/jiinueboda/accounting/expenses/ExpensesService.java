@@ -30,7 +30,7 @@ public class ExpensesService {
         return jdbcTemplateOne.query(sql,(rs,i)->setPendingExpenses(rs));
     }
 
-    public List<PendingExpense> getAllExpenses(String startDate, String endDate) {
+    public List<ProccessedExpense> getAllExpenses(String startDate, String endDate) {
 
 
         String sql = """
@@ -44,7 +44,7 @@ public class ExpensesService {
                                                     AND deleted_at is null ORDER BY created_at DESC
                 """;
 
-        return jdbcTemplateOne.query(sql,(rs,i)->setPendingExpenses(rs),startDate,endDate);
+        return jdbcTemplateOne.query(sql,(rs,i)->setProccessedExpenses(rs),startDate,endDate);
     }
 
     public int createExpense(CreateExpense createExpense) throws Exception{
@@ -97,13 +97,50 @@ public class ExpensesService {
                 expenseId);
     }
 
-    public List<PendingExpense> getAllPendingExpenses() throws Exception{
+    public List<PendingExpense> getAllPendingExpenses() throws Exception {
         String sql = """
-        SELECT id, description, reciever_type, reciever, account_number, amount, created_at
-        FROM temp_expense_requests 
-        WHERE status='PENDING_APPROVAL'
+            SELECT id,main_category_id,subcategory_id,minor_subcategory_id, description, reciever_type, reciever, account_number, amount, created_at
+            FROM temp_expense_requests
+            WHERE status='PENDING_APPROVAL'
         """;
         return jdbcTemplateOne.query(sql, (rs, i) -> setPendingExpenses(rs));
+    }
+
+    private ProccessedExpense setProccessedExpenses(ResultSet rs) throws SQLException {
+
+        ProccessedExpense proccessedExpense = new ProccessedExpense();
+        proccessedExpense.setId(rs.getInt("id"));
+        proccessedExpense.setDescription(rs.getString("description"));
+        proccessedExpense.setReciever(rs.getString("reciever"));
+        proccessedExpense.setAccountNumber(rs.getString("account_number"));
+        proccessedExpense.setAmount(rs.getInt("amount"));
+        proccessedExpense.setCreatedAt(rs.getString("created_at"));
+        proccessedExpense.setMpesaRefferenceCode(rs.getString("mpesa_refference"));
+        proccessedExpense.setMainCategory(rs.getString("main_category"));
+        proccessedExpense.setSubCategory(rs.getString("sub_category"));
+        proccessedExpense.setMinorSubCategory(rs.getString("minor_subcategory"));
+
+
+        try {
+
+            // Handle enum conversion for reciever_type
+            String receiverTypeStr = rs.getString("reciever_type");
+            if (receiverTypeStr != null) {
+                try {
+                    RecieverType receiverType = RecieverType.valueOf(receiverTypeStr);
+                    proccessedExpense.setRecieverType(receiverType);
+                } catch (IllegalArgumentException e) {
+                    // Log the error and set to null or default value
+                    System.err.println("Invalid receiver type: " + receiverTypeStr);
+                    proccessedExpense.setRecieverType(null);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException("Error mapping PendingExpense from ResultSet", e);
+        }
+
+        return proccessedExpense;
     }
 
     private PendingExpense setPendingExpenses(ResultSet rs) throws SQLException {
@@ -114,10 +151,9 @@ public class ExpensesService {
         pendingExpense.setAccountNumber(rs.getString("account_number"));
         pendingExpense.setAmount(rs.getInt("amount"));
         pendingExpense.setCreatedAt(rs.getString("created_at"));
-
-        try{
-            pendingExpense.setMpesaRefferenceCode(rs.getString("mpesa_refference"));
-        }catch (Exception ignored){}
+        pendingExpense.setMainCategory(rs.getInt("main_category_id"));
+        pendingExpense.setSubCategory(rs.getInt("subcategory_id"));
+        pendingExpense.setMinorSubCategory(rs.getInt("minor_subcategory_id"));
 
 
         try {
@@ -138,12 +174,6 @@ public class ExpensesService {
         } catch (SQLException e) {
             throw new SQLException("Error mapping PendingExpense from ResultSet", e);
         }
-
-        try{
-            pendingExpense.setMainCategory(rs.getString("main_category"));
-            pendingExpense.setSubCategory(rs.getString("sub_category"));
-            pendingExpense.setMinorSubCategory(rs.getString("minor_subcategory"));
-        }catch (Exception ignored){}
 
         return pendingExpense;
     }
