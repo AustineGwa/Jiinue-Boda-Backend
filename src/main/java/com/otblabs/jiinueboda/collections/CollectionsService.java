@@ -4,7 +4,7 @@ import com.otblabs.jiinueboda.dashboard.models.DailyPaymentTracker;
 import com.otblabs.jiinueboda.collections.models.MonthlyGeneralPerformance;
 import com.otblabs.jiinueboda.dashboard.models.MonthlyPerformance;
 import com.otblabs.jiinueboda.collections.models.*;
-import com.otblabs.jiinueboda.jiinue.models.OldAccountNewAccountPayment;
+import com.otblabs.jiinueboda.loans.models.OldAccountNewAccountPayment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import java.sql.ResultSet;

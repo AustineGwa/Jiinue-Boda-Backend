@@ -1,7 +1,7 @@
-package com.otblabs.jiinueboda.jiinue;
+package com.otblabs.jiinueboda.loans;
 
 import com.otblabs.jiinueboda.collections.models.SpecialCaseLoan;
-import com.otblabs.jiinueboda.jiinue.models.*;
+import com.otblabs.jiinueboda.loans.models.*;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
 import org.springframework.cache.annotation.Cacheable;

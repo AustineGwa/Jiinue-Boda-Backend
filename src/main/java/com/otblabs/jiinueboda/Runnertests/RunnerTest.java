@@ -8,7 +8,7 @@ import com.otblabs.jiinueboda.directors.DirectorService;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.MpesaTransactionsService;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.hashing.MssidHash;
 import com.otblabs.jiinueboda.investors.InvestmentManagementService;
-import com.otblabs.jiinueboda.jiinue.LoanManagementService;
+import com.otblabs.jiinueboda.loans.LoanManagementService;
 import com.otblabs.jiinueboda.sms.ApiMessageDTO;
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.sms.providers.ampletech.Contact;
@@ -20,8 +20,6 @@ import com.otblabs.jiinueboda.users.UserService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

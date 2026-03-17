@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.jiinue.models;
+package com.otblabs.jiinueboda.loans.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanRestructureData {
-    String loanID;
-    int updatedLoanTerm;
+public class LoanRequestResponse {
+    String message;
+    boolean successful;
+    Loan loan;
 }

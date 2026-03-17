@@ -1,9 +1,8 @@
-package com.otblabs.jiinueboda.jiinue;
+package com.otblabs.jiinueboda.loans;
 
 import com.otblabs.jiinueboda.collections.models.SpecialCaseLoan;
 import com.otblabs.jiinueboda.filemanagement.FileManagementService;
-import com.otblabs.jiinueboda.jiinue.models.*;
-import lombok.Getter;
+import com.otblabs.jiinueboda.loans.models.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

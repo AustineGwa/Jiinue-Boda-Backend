@@ -1,6 +1,6 @@
-package com.otblabs.jiinueboda.jiinue;
+package com.otblabs.jiinueboda.loans;
 
-import com.otblabs.jiinueboda.jiinue.models.*;
+import com.otblabs.jiinueboda.loans.models.*;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.MpesaTransactionsService;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.MpesaCommandId;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.B2CRequest;
@@ -9,7 +9,7 @@ import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.Usertype;
-import com.otblabs.jiinueboda.utility.Functions;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -163,7 +163,7 @@ public class LendingService {
                 Timestamp.valueOf(LocalDateTime.now()),
                 Timestamp.valueOf(LocalDateTime.now()),
                 newLoanRequest.getTrackerImei(),
-                Functions.formatPhoneNumber(newLoanRequest.getTrackerSimcard()),
+                UtilityFunctions.formatPhoneNumber(newLoanRequest.getTrackerSimcard()),
                 newLoanRequest.getLoanBranch()
         );
 

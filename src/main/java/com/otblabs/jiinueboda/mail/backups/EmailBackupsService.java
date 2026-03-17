@@ -2,8 +2,8 @@ package com.otblabs.jiinueboda.mail.backups;
 
 import com.otblabs.jiinueboda.accounting.expenses.ExpensesService;
 import com.otblabs.jiinueboda.accounting.expenses.models.PendingExpense;
-import com.otblabs.jiinueboda.jiinue.LoanManagementService;
-import com.otblabs.jiinueboda.jiinue.models.PendingLoanData;
+import com.otblabs.jiinueboda.loans.LoanManagementService;
+import com.otblabs.jiinueboda.loans.models.PendingLoanData;
 import com.otblabs.jiinueboda.mail.EmailService;
 import com.otblabs.jiinueboda.utility.CSVConverter;
 import org.springframework.stereotype.Service;

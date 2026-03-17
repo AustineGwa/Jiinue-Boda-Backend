@@ -2,7 +2,7 @@ package com.otblabs.jiinueboda.customerservice;
 
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
-import com.otblabs.jiinueboda.utility.Functions;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ public class CustomerServiceInfoService {
                 customerServiceInfo.getServiceCategoryOther(),
                 customerServiceInfo.getCustomerType(),
                 customerServiceInfo.getCustomerIdNumber(),
-                Functions.formatPhoneNumber(customerServiceInfo.getCustomerPhoneNumber()),
+                UtilityFunctions.formatPhoneNumber(customerServiceInfo.getCustomerPhoneNumber()),
                 customerServiceInfo.isCustomerCanBeServed(),
                 "PENDING",
                 user.getId(),

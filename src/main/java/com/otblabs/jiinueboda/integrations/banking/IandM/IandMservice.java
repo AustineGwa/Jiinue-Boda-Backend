@@ -1,5 +1,6 @@
 package com.otblabs.jiinueboda.integrations.banking.IandM;
 
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import tools.jackson.databind.ObjectMapper;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.*;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.auth.AuthToken;
@@ -7,7 +8,6 @@ import com.otblabs.jiinueboda.integrations.banking.IandM.models.collections.Cust
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.collections.CustomerValidationResponse;
 import com.otblabs.jiinueboda.integrations.banking.IandM.models.mpesa.PaymentRequest;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.MpesaTransactionsService;
-import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import okhttp3.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;

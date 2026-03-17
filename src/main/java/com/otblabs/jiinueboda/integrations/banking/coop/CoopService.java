@@ -6,7 +6,7 @@ import com.otblabs.jiinueboda.integrations.banking.coop.core.CoopResponseBody;
 import com.otblabs.jiinueboda.integrations.banking.coop.mpesa.Destination;
 import com.otblabs.jiinueboda.integrations.banking.coop.mpesa.SendToMpesaRequestBody;
 import com.otblabs.jiinueboda.integrations.banking.coop.mpesa.Source;
-import com.otblabs.jiinueboda.utility.Functions;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import okhttp3.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 //import org.springframework.security.crypto.codec.Base64;
@@ -162,7 +162,7 @@ public class CoopService {
 
         String endpointUrl ="https://openapi-sandbox.co-opbank.co.ke/FundsTransfer/External/A2M/Mpesa/1.0.0";
         String callbackUrl = "https://fintech.tequelabstechnologies.tech/banking/coop/send-to-mpes-ipn";
-        String messageRefference = String.format("%06d", new Random().nextInt(10000)) + Functions.getCurrentTimestamp();
+        String messageRefference = String.format("%06d", new Random().nextInt(10000)) + UtilityFunctions.getCurrentTimestamp();
 
         Source source = new Source();
         source.setAccountNumber("36001873000");

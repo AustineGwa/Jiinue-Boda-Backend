@@ -4,7 +4,7 @@ import com.otblabs.jiinueboda.accounting.expenses.ExpensesService;
 import com.otblabs.jiinueboda.accounting.expenses.models.CreateExpense;
 import com.otblabs.jiinueboda.accounting.expenses.models.RecieverType;
 import com.otblabs.jiinueboda.investors.models.*;
-import com.otblabs.jiinueboda.jiinue.models.Loan;
+import com.otblabs.jiinueboda.loans.models.Loan;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -5,7 +5,7 @@ import com.otblabs.jiinueboda.collections.models.MonthlyGeneralPerformance;
 import com.otblabs.jiinueboda.dashboard.models.MonthlyPerformance;
 import com.otblabs.jiinueboda.collections.models.*;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.MpesaTransactionsService;
-import com.otblabs.jiinueboda.jiinue.models.OldAccountNewAccountPayment;
+import com.otblabs.jiinueboda.loans.models.OldAccountNewAccountPayment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

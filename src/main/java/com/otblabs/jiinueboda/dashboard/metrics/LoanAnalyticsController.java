@@ -1,7 +1,7 @@
 package com.otblabs.jiinueboda.dashboard.metrics;
 
-import com.otblabs.jiinueboda.jiinue.LoanManagementService;
-import com.otblabs.jiinueboda.jiinue.models.PendingLoanData;
+import com.otblabs.jiinueboda.loans.LoanManagementService;
+import com.otblabs.jiinueboda.loans.models.PendingLoanData;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

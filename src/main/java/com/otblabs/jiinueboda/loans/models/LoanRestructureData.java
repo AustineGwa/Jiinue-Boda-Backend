@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.jiinue.models;
+package com.otblabs.jiinueboda.loans.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OldAccountNewAccountPayment {
-    private String transactionId;
-    private String newAccount;
+public class LoanRestructureData {
+    String loanID;
+    int updatedLoanTerm;
 }

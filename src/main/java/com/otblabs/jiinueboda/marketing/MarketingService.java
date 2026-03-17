@@ -5,14 +5,12 @@ import com.otblabs.jiinueboda.marketing.models.*;
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
-import com.otblabs.jiinueboda.utility.Functions;
-import org.springframework.http.ResponseEntity;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -64,7 +62,7 @@ public class MarketingService {
             PreparedStatement ps = connection.prepareStatement(insertLeadSql, Statement.RETURN_GENERATED_KEYS);
             ps.setObject(1, lead.getGroupId());
             ps.setString(2, lead.getUserName());
-            ps.setString(3, Functions.formatPhoneNumber(lead.getPhone()));
+            ps.setString(3, UtilityFunctions.formatPhoneNumber(lead.getPhone()));
             ps.setObject(4, lead.getChannelId());
             ps.setObject(5, lead.getCampaignId());
             ps.setObject(6, lead.getAgentId());
@@ -99,7 +97,7 @@ public class MarketingService {
                 systemUser.getId()
         );
 
-        smsService.sendUserWelcomeMessage(lead.getUserName(), Functions.formatPhoneNumber(lead.getPhone()));
+        smsService.sendUserWelcomeMessage(lead.getUserName(), UtilityFunctions.formatPhoneNumber(lead.getPhone()));
 
         return leadId.intValue();
     }

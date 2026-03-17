@@ -3,14 +3,13 @@ package com.otblabs.jiinueboda.callcenter;
 import com.otblabs.jiinueboda.filemanagement.FileManagementService;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
-import com.otblabs.jiinueboda.utility.Utility;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,7 +35,7 @@ public class CallCenterService {
                 INSERT INTO call_center_logs(loan_account,comment_type, call_picked, client_response, reason_not_picked,rep_id, created_at) VALUES (?,?,?,?,?,?,?)
                 """;
         return jdbcTemplateOne.update(sql, callComment.getLoanAccount(),callComment.getCommentType(),callComment.isCallPicked(),
-                callComment.getClientResponse(),callComment.getReasonNotPicked(),systemUser.getId(), Utility.getCurrentTimestamp());
+                callComment.getClientResponse(),callComment.getReasonNotPicked(),systemUser.getId(), UtilityFunctions.getCurrentTimestamp());
     }
 
     public int postCallCommentMultipart(CallCommentMultipart callComment, String name) throws Exception{
@@ -67,7 +66,7 @@ public class CallCenterService {
             ps.setString(10, callComment.getClientResponse());
             ps.setString(11, callComment.getReasonNotPicked());
             ps.setLong(12, systemUser.getId());
-            ps.setString(13, Utility.getCurrentTimestamp());
+            ps.setString(13, UtilityFunctions.getCurrentTimestamp());
 
             return ps;
         }, keyHolder);

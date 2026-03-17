@@ -1,6 +1,6 @@
 package com.otblabs.jiinueboda.dashboard.metrics;
 
-import com.otblabs.jiinueboda.jiinue.models.PendingLoanData;
+import com.otblabs.jiinueboda.loans.models.PendingLoanData;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

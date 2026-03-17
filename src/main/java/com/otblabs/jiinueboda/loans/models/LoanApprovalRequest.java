@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.jiinue.models;
+package com.otblabs.jiinueboda.loans.models;
 
 
 import lombok.*;

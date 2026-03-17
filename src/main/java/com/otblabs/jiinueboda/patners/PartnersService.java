@@ -1,7 +1,6 @@
 package com.otblabs.jiinueboda.patners;
 
-import com.otblabs.jiinueboda.users.models.SystemUser;
-import com.otblabs.jiinueboda.utility.Functions;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import java.sql.ResultSet;
@@ -55,7 +54,7 @@ public class PartnersService {
         String sql = "SELECT * FROM partners WHERE contact_email =? OR contact_phone =?";
 
         try{
-            return jdbcTemplateOne.queryForObject(sql, (resultSet, i) -> mapRowToPartner(resultSet),user, Functions.formatPhoneNumber(user));
+            return jdbcTemplateOne.queryForObject(sql, (resultSet, i) -> mapRowToPartner(resultSet),user, UtilityFunctions.formatPhoneNumber(user));
         }catch (Exception e){
             return  null;
         }

@@ -6,7 +6,7 @@ import com.otblabs.jiinueboda.marketing.models.MarketingPerformanceDTO;
 import com.otblabs.jiinueboda.marketing.models.MarketingQuestionaire;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
-import com.otblabs.jiinueboda.utility.Functions;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +43,7 @@ public class MarketingController {
             return ResponseEntity.badRequest().body("Phone number is required");
         }
 
-        SystemUser existingUser = userService.getByEmailOrPhone(Functions.formatPhoneNumber(marketingLead.getPhone()));
+        SystemUser existingUser = userService.getByEmailOrPhone(UtilityFunctions.formatPhoneNumber(marketingLead.getPhone()));
         if (existingUser != null) {
             return ResponseEntity.unprocessableEntity()
                     .body("A user with this phone number already exists, please proceed to their account");

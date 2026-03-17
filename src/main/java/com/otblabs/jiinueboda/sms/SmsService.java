@@ -2,15 +2,14 @@ package com.otblabs.jiinueboda.sms;
 
 import com.otblabs.jiinueboda.collections.models.LoansByAge;
 import com.otblabs.jiinueboda.integrations.IncomingPaymentConfirmation;
-import com.otblabs.jiinueboda.jiinue.models.LoanPayeeDetail;
-import com.otblabs.jiinueboda.jiinue.models.PendingDisbursement;
-import com.otblabs.jiinueboda.jiinue.models.UserLoanDetail;
+import com.otblabs.jiinueboda.loans.models.LoanPayeeDetail;
+import com.otblabs.jiinueboda.loans.models.PendingDisbursement;
+import com.otblabs.jiinueboda.loans.models.UserLoanDetail;
 import com.otblabs.jiinueboda.users.models.Signatory;
 import com.otblabs.jiinueboda.users.models.SystemUser;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

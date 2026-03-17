@@ -2,8 +2,8 @@ package com.otblabs.jiinueboda.crons;
 
 import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.B2CRequestResponse;
 import com.otblabs.jiinueboda.investors.InvestmentManagementService;
-import com.otblabs.jiinueboda.jiinue.LendingService;
-import com.otblabs.jiinueboda.jiinue.models.Loan;
+import com.otblabs.jiinueboda.loans.LendingService;
+import com.otblabs.jiinueboda.loans.models.Loan;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

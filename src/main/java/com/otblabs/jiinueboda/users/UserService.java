@@ -1,13 +1,12 @@
 package com.otblabs.jiinueboda.users;
 
-import com.otblabs.jiinueboda.jiinue.models.LoanPayeeDetail;
-import com.otblabs.jiinueboda.jiinue.models.UserLoanDetail;
+import com.otblabs.jiinueboda.loans.models.LoanPayeeDetail;
+import com.otblabs.jiinueboda.loans.models.UserLoanDetail;
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.staff.NewStaffRequest;
 import com.otblabs.jiinueboda.users.models.*;
 import com.otblabs.jiinueboda.users.profile.UserKyc;
-import com.otblabs.jiinueboda.utility.Functions;
-import org.springframework.beans.factory.annotation.Value;
+import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -82,7 +81,7 @@ public class UserService {
             ps.setString(3, systemUser.getLastName());
             ps.setString(4, systemUser.getEmail());
             ps.setString(5,systemUser.getRefferedBy());
-            ps.setString(6, Functions.formatPhoneNumber(systemUser.getPhone()));
+            ps.setString(6, UtilityFunctions.formatPhoneNumber(systemUser.getPhone()));
             ps.setString(7, passwordEncoder.encode(systemUser.getNationalID()));
             ps.setString(8, systemUser.getNationalID());
             ps.setInt(9, systemUser.getCreatedBy());
@@ -102,7 +101,7 @@ public class UserService {
         String sql2 = "INSERT INTO user_roles(user_id, usertype, uproval_level) VALUES (?,?,0)";
         jdbcTemplateOne.update(sql2, userId, "Client");
 
-        smsService.sendUserWelcomeMessage(systemUser.getFirstName(),Functions.formatPhoneNumber(systemUser.getPhone()));
+        smsService.sendUserWelcomeMessage(systemUser.getFirstName(), UtilityFunctions.formatPhoneNumber(systemUser.getPhone()));
 
         return userId;
     }
@@ -127,7 +126,7 @@ public class UserService {
             ps.setString(3, systemUser.getLastName());
             ps.setString(4, systemUser.getEmail());
             ps.setString(5,null);
-            ps.setString(6, Functions.formatPhoneNumber(systemUser.getPhone()));
+            ps.setString(6, UtilityFunctions.formatPhoneNumber(systemUser.getPhone()));
             ps.setString(7, passwordEncoder.encode(systemUser.getNationalID()));
             ps.setString(8, systemUser.getNationalID());
             ps.setInt(9, systemUser.getCreatedBy());
@@ -144,7 +143,7 @@ public class UserService {
 
         String sql2 = "INSERT INTO user_roles(user_id, usertype, uproval_level) VALUES (?,?,0)";
         jdbcTemplateOne.update(sql2, userId, systemUser.getRole());
-        smsService.sendUserWelcomeMessage(systemUser.getFirstName(),Functions.formatPhoneNumber(systemUser.getPhone()));
+        smsService.sendUserWelcomeMessage(systemUser.getFirstName(), UtilityFunctions.formatPhoneNumber(systemUser.getPhone()));
         return userId;
     }
 
@@ -188,11 +187,11 @@ public class UserService {
                 userKyc.getIncomeSourcesDetails(),
                 userKyc.getTotalIncomeFromOtherSourcesPerDay(),
                 userKyc.getGuarantor().getFullName(),
-                Functions.formatPhoneNumber(userKyc.getGuarantor().getPhoneNumber()),
+                UtilityFunctions.formatPhoneNumber(userKyc.getGuarantor().getPhoneNumber()),
                 userKyc.getGuarantor().getIdNumber(),
                 userKyc.getGuarantor().getRelationship(),
                 userKyc.getNextOfKin().getFullName(),
-                Functions.formatPhoneNumber(userKyc.getNextOfKin().getPhoneNumber()),
+                UtilityFunctions.formatPhoneNumber(userKyc.getNextOfKin().getPhoneNumber()),
                 userKyc.getNextOfKin().getIdNumber(),
                 userKyc.getNextOfKin().getRelationship(),
                 systemUser.getId()
@@ -257,7 +256,7 @@ public class UserService {
             String sql = "SELECT T0.*, T1.* FROM users T0  LEFT JOIN user_roles T1 ON T0.id =  T1.user_id WHERE T0.email=? OR T0.phone = ?";
 
             try{
-                return jdbcTemplateOne.queryForObject(sql, (resultSet, i) -> setUser(resultSet),user,Functions.formatPhoneNumber(user));
+                return jdbcTemplateOne.queryForObject(sql, (resultSet, i) -> setUser(resultSet),user, UtilityFunctions.formatPhoneNumber(user));
             }catch (Exception e){
                 return  null;
             }
