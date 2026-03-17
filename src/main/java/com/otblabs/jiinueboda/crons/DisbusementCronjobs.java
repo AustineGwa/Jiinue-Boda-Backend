@@ -2,7 +2,6 @@ package com.otblabs.jiinueboda.crons;
 
 import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.B2CRequestResponse;
 import com.otblabs.jiinueboda.investors.InvestmentManagementService;
-import com.otblabs.jiinueboda.jifuel.FuelLoanService;
 import com.otblabs.jiinueboda.jiinue.LendingService;
 import com.otblabs.jiinueboda.jiinue.models.Loan;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,12 +14,11 @@ public class DisbusementCronjobs {
 
     private final LendingService lendingService;
     private final InvestmentManagementService investmentManagementService;
-    private final FuelLoanService fuelLoanService;
 
-    public DisbusementCronjobs(LendingService lendingService, InvestmentManagementService investmentManagementService, FuelLoanService fuelLoanService) {
+
+    public DisbusementCronjobs(LendingService lendingService, InvestmentManagementService investmentManagementService) {
         this.lendingService = lendingService;
         this.investmentManagementService = investmentManagementService;
-        this.fuelLoanService = fuelLoanService;
     }
 
     @Scheduled(fixedRate = 1000) //every second
@@ -56,17 +54,5 @@ public class DisbusementCronjobs {
         }
     }
 
-//    @Scheduled(fixedRate = 10_000) //every 10 seconds
-//    public void disburseFuelLoans(){
-//        List<FuelLoan> pendingFuelDisbursments = fuelLoanService.getAllPendingFuelDisbursements();
-//        pendingFuelDisbursments.forEach(fuelLoan->{
-//            try {
-//                fuelLoanService.setLoanDisbursementInitiated(fuelLoan.getLoanID());
-//                BuygoodsRequestResponse buygoodsRequestResponse = fuelLoanService.disburseFuelLoan(fuelLoan);
-//                fuelLoanService.updateMpesaConversionId(buygoodsRequestResponse,fuelLoan);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//    }
+
 }

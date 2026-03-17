@@ -8,8 +8,6 @@ import com.otblabs.jiinueboda.directors.DirectorService;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.MpesaTransactionsService;
 import com.otblabs.jiinueboda.integrations.momo.mpesa.hashing.MssidHash;
 import com.otblabs.jiinueboda.investors.InvestmentManagementService;
-import com.otblabs.jiinueboda.jifuel.FuelLoanService;
-import com.otblabs.jiinueboda.jifuel.models.PendingJifuel;
 import com.otblabs.jiinueboda.jiinue.LoanManagementService;
 import com.otblabs.jiinueboda.sms.ApiMessageDTO;
 import com.otblabs.jiinueboda.sms.SmsService;
@@ -33,7 +31,6 @@ public class RunnerTest {
 
     private final MpesaTransactionsService mpesaTransactionsService;
     private final CollectionAssinmentService collectionAssinmentService;
-    private final FuelLoanService fuelLoanService;
     private final InvestmentManagementService investmentManagementService;
     private final SmsService smsService;
     private final DirectorService directorService;
@@ -49,7 +46,6 @@ public class RunnerTest {
 
     public RunnerTest(MpesaTransactionsService mpesaTransactionsService,
                       CollectionAssinmentService collectionAssinmentService,
-                      FuelLoanService fuelLoanService,
                       InvestmentManagementService investmentManagementService,
                       SmsService smsService,
                       DirectorService directorService,
@@ -59,7 +55,6 @@ public class RunnerTest {
 
         this.mpesaTransactionsService = mpesaTransactionsService;
         this.collectionAssinmentService = collectionAssinmentService;
-        this.fuelLoanService = fuelLoanService;
         this.investmentManagementService = investmentManagementService;
         this.smsService = smsService;
         this.directorService = directorService;
@@ -324,61 +319,7 @@ public class RunnerTest {
 		},dslp);
 	}
 
-	public void sendJifuelPaymentRemider(){
 
-		getPendingJifuelPayments().forEach(loan -> {
-
-			try{
-				String reminderMessage = "Hello "+loan.getFirstName()+" "+loan.getLastName() +" Your jifuel advance of "+ loan.getLoanPrincipal() +
-						" is still pending, please make a payment today to qualify for better deals.\n" +
-						"Paybill number 4125097"+
-						"\naccount number "+loan.getLoanId()+
-						"\nFor any queries, call us on {enquiryNumber}";
-
-				List<Contact> contactList = new ArrayList<>();
-				Contact contact = new Contact();
-				contact.setNumber(loan.getPhone());
-				contact.setBody(reminderMessage);
-				contact.setSms_type("plain");
-				contactList.add(contact);
-
-				MessageData messageData = new MessageData();
-				messageData.setContact(contactList);
-
-				try{
-//					sendSms(loan.getAppId(), messageData);
-				}catch (Exception ignored){}
-
-			}catch (Exception exception){
-				exception.printStackTrace();
-			}
-		});
-	}
-
-	public Iterable<PendingJifuel> getPendingJifuelPayments() {
-		String sql = """
-                  SELECT T1.loanID, T1.loanPrincipal,x.first_name, x.middle_name, x.last_name, x.app_id,x.phone FROM fuel_loan T1
-                                       LEFT JOIN (
-                                       SELECT id, first_name, middle_name, last_name, app_id,phone FROM users
-                                       ) x ON T1.userID = x.id
-                                       WHERE T1.disbursedAt is not null
-                                       AND T1.payedAt is null
-                                       AND  T1.loanID NOT IN(SELECT BillRefNumber FROM mpesa_c2b)
-                """;
-		return jdbcTemplateOne.query(sql,(rs,i)->setPendingJifuel(rs));
-	}
-
-	public PendingJifuel setPendingJifuel(ResultSet rs) throws SQLException {
-		PendingJifuel pendingJifuel = new PendingJifuel();
-		pendingJifuel.setFirstName(rs.getString("first_name"));
-		pendingJifuel.setMiddleName(rs.getString("middle_name"));
-		pendingJifuel.setLastName(rs.getString("last_name"));
-		pendingJifuel.setPhone(rs.getString("phone"));
-		pendingJifuel.setAppId(rs.getInt("app_id"));
-		pendingJifuel.setLoanId(rs.getString("loanID"));
-		pendingJifuel.setLoanPrincipal(rs.getInt("loanPrincipal"));
-		return pendingJifuel;
-	}
 
     public void topUpLoan(int amount,String phone, String loanId) {
         mpesaTransactionsService.sendMoney(String.valueOf(amount),phone,loanId);

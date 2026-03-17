@@ -1,6 +1,5 @@
 package com.otblabs.jiinueboda.patners;
 
-import com.otblabs.jiinueboda.jifuel.models.FuelLoan;
 import com.otblabs.jiinueboda.users.models.SystemUser;
 import com.otblabs.jiinueboda.utility.Functions;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,28 +48,6 @@ public class PartnersService {
         partner.setPassword(password);
         partner.setCreatedAt(createdAt);
         return partner;
-    }
-
-
-    public Object getPatnerDashboardData() {
-
-        return null;
-    }
-
-    public List<FuelLoan> getAllUnPaidJifuelLoans(int partnerId){
-       return  null;
-    }
-
-    public List<FuelLoan> getAllPaidJifuelLoans(int partnerId){
-       return  null;
-    }
-
-    public List<SystemUser> getAllNewProfiles(){
-       return null;
-    }
-
-    public Object approveProfile(SystemUser systemUser){
-       return null;
     }
 
     public Partner getByEmailOrPhone(String user) {

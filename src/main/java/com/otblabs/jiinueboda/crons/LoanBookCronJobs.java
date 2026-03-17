@@ -3,15 +3,8 @@ package com.otblabs.jiinueboda.crons;
 import com.otblabs.jiinueboda.collections.CollectionsService;
 import com.otblabs.jiinueboda.mail.backups.EmailBackupsService;
 import com.otblabs.jiinueboda.recovery.BikeRecoveryService;
-import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.B2CRequestResponse;
-import com.otblabs.jiinueboda.investors.InvestmentManagementService;
-import com.otblabs.jiinueboda.jifuel.FuelLoanService;
-import com.otblabs.jiinueboda.jiinue.LendingService;
-import com.otblabs.jiinueboda.jiinue.models.Loan;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class LoanBookCronJobs {

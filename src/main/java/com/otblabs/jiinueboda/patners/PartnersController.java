@@ -15,15 +15,6 @@ public class PartnersController {
         this.partnersService = partnersService;
     }
 
-    ResponseEntity<Object> getPatnerDashboard(){
-        try{
-            return ResponseEntity.ok(partnersService.getPatnerDashboardData());
-        }catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
     @PostMapping("/create/new")
     ResponseEntity<Partner> createNewPartner(@RequestBody Partner partner){
         try {
