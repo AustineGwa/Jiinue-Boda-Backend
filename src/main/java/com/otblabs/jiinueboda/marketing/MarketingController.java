@@ -2,6 +2,7 @@ package com.otblabs.jiinueboda.marketing;
 
 import com.otblabs.jiinueboda.marketing.models.LeadFollowUp;
 import com.otblabs.jiinueboda.marketing.models.MarketingLead;
+import com.otblabs.jiinueboda.marketing.models.MarketingPerformanceDTO;
 import com.otblabs.jiinueboda.marketing.models.MarketingQuestionaire;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/marketing")
@@ -21,6 +23,17 @@ public class MarketingController {
     public MarketingController(MarketingService marketingService, UserService userService) {
         this.marketingService = marketingService;
         this.userService = userService;
+    }
+
+    @GetMapping("/performance")
+    public ResponseEntity<List<MarketingPerformanceDTO>> getMarketingPerformance() {
+        try {
+            List<MarketingPerformanceDTO> performance = marketingService.getMarketingPerformance();
+            return ResponseEntity.ok(performance);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PostMapping("/new-leads")

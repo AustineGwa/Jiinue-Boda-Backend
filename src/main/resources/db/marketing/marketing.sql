@@ -41,3 +41,18 @@ UI PROPOSAL
 | Medium (optional)     | campaign_mediums    |
 | Branch                | branches            |
 | Event Type (internal) | funnel_event_types  |
+
+-- dashboard
+SELECT
+    c.name AS channel_name,
+    COUNT(ml.id) AS total_leads,
+    SUM(CASE WHEN cfe.event_type_id = 2 THEN 1 ELSE 0 END) AS applications_started,
+    SUM(CASE WHEN cfe.event_type_id = 3 THEN 1 ELSE 0 END) AS applications_submitted,
+    SUM(CASE WHEN cfe.event_type_id = 4 THEN 1 ELSE 0 END) AS loans_approved,
+    SUM(CASE WHEN cfe.event_type_id = 5 THEN 1 ELSE 0 END) AS loans_disbursed,
+    ROUND(SUM(CASE WHEN cfe.event_type_id = 5 THEN 1 ELSE 0 END) / COUNT(ml.id) * 100, 2) AS conversion_to_disbursed_percentage
+FROM marketing_leads ml
+         LEFT JOIN marketing_channels c ON ml.channel_id = c.id
+         LEFT JOIN client_funnel_events cfe ON ml.id = cfe.client_id
+GROUP BY c.id, c.name
+ORDER BY total_leads DESC;

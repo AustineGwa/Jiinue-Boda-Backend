@@ -1,10 +1,7 @@
 package com.otblabs.jiinueboda.marketing;
 
 
-import com.otblabs.jiinueboda.marketing.models.LeadFollowUp;
-import com.otblabs.jiinueboda.marketing.models.LeadsComment;
-import com.otblabs.jiinueboda.marketing.models.MarketingLead;
-import com.otblabs.jiinueboda.marketing.models.MarketingQuestionaire;
+import com.otblabs.jiinueboda.marketing.models.*;
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
@@ -205,5 +202,35 @@ public class MarketingService {
     public List<Map<String, Object>> getFunnelEventTypes() {
         String sql = "SELECT id, code, description FROM funnel_event_types ORDER BY id";
         return jdbcTemplateOne.queryForList(sql);
+    }
+
+    public List<MarketingPerformanceDTO> getMarketingPerformance() {
+        String sql = """
+            SELECT 
+                c.name AS channel_name,
+                COUNT(ml.id) AS total_leads,
+                SUM(CASE WHEN cfe.event_type_id = 2 THEN 1 ELSE 0 END) AS applications_started,
+                SUM(CASE WHEN cfe.event_type_id = 3 THEN 1 ELSE 0 END) AS applications_submitted,
+                SUM(CASE WHEN cfe.event_type_id = 4 THEN 1 ELSE 0 END) AS loans_approved,
+                SUM(CASE WHEN cfe.event_type_id = 5 THEN 1 ELSE 0 END) AS loans_disbursed,
+                ROUND(SUM(CASE WHEN cfe.event_type_id = 5 THEN 1 ELSE 0 END) / COUNT(ml.id) * 100, 2) AS conversion_to_disbursed_percentage
+            FROM marketing_leads ml
+            LEFT JOIN marketing_channels c ON ml.channel_id = c.id
+            LEFT JOIN client_funnel_events cfe ON ml.id = cfe.client_id
+            GROUP BY c.id, c.name
+            ORDER BY total_leads DESC
+        """;
+
+        return jdbcTemplateOne.query(sql, (rs, rowNum) -> {
+            MarketingPerformanceDTO dto = new MarketingPerformanceDTO();
+            dto.setChannelName(rs.getString("channel_name"));
+            dto.setTotalLeads(rs.getInt("total_leads"));
+            dto.setApplicationsStarted(rs.getInt("applications_started"));
+            dto.setApplicationsSubmitted(rs.getInt("applications_submitted"));
+            dto.setLoansApproved(rs.getInt("loans_approved"));
+            dto.setLoansDisbursed(rs.getInt("loans_disbursed"));
+            dto.setConversionToDisbursed(rs.getDouble("conversion_to_disbursed_percentage"));
+            return dto;
+        });
     }
 }
