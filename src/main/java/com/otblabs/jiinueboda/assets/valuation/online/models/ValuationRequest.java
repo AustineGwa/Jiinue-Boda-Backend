@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 @ToString
 public class ValuationRequest {
 
-    @NotNull
     private Integer assetId;
     private int technicianId;
 
