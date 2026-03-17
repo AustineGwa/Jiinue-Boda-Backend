@@ -13,7 +13,7 @@ public class LoansByAge {
     private String id;
     private String firstName;
     private String lastName;
-    private String Account;
+    private String account;
     private int branch;
     private String phone;
     private int loanTerm;
