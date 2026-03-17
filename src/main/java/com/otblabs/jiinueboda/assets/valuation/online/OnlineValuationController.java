@@ -25,7 +25,7 @@ public class OnlineValuationController {
     }
 
     @PostMapping("/create-new-valuation")
-    public ResponseEntity<OnlineAssetValuation> create( @RequestBody ValuationRequest request, Principal principal) {
+    public ResponseEntity<OnlineAssetValuation> create(@RequestBody ValuationRequest request, Principal principal) {
 
         System.out.println("VALUATION REQUEST "+ request.toString());
         try{
