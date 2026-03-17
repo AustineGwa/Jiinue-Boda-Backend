@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.fieldapp.marketing.models;
+package com.otblabs.jiinueboda.marketing.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,4 +13,10 @@ public class MarketingLead {
     private int groupId;
     private String userName;
     private String phone;
+    private int channelId;
+    private int campaignId;
+    private int agentId;
+    private String referralCode;
+    private int branchId;
+    private String notes;
 }

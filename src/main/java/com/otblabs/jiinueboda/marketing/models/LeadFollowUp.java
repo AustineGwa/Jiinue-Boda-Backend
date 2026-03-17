@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.fieldapp.marketing.models;
+package com.otblabs.jiinueboda.marketing.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
