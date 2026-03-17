@@ -68,14 +68,11 @@ public class ExpensesService {
     public int updateExpenseDetails(CreateExpense createExpense, int expenseId) throws Exception {
 
         String createExpenseSql = """
-                UPDATE temp_expense_requests SET main_category_id=?,subcategory_id=?,minor_subcategory_id=?, description=?,
+                UPDATE temp_expense_requests SET  description=?,
                                                  reciever_type=?, reciever=?, account_number=?, amount=? WHERE id=?
                 """;
 
         return jdbcTemplateOne.update(createExpenseSql,
-                createExpense.getMainMainCategoryId(),
-                createExpense.getSubCategoryId(),
-                createExpense.getMinorSubcategoryId(),
                 createExpense.getDescription(),
                 createExpense.getRecieverType().name(),
                 createExpense.getReciever(),
