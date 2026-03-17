@@ -10,6 +10,7 @@ import com.otblabs.jiinueboda.users.models.SystemUser;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -363,5 +364,29 @@ public class SmsService {
         apiMessageDTO.setReciver(phoneNumber);
         apiMessageDTO.setMessage(message);
         smsCore.sendSingleTransactionalSms(apiMessageDTO);
+    }
+
+    public void sendDaily8PmLoanUpdate() throws Exception {
+        String sql = """
+                SELECT
+                    u.phone as phone_number,
+                    CONCAT(
+                        'Dear ', u.first_name,
+                        ', your loan is ', DATEDIFF(NOW(), disbursed_at),
+                        ' days active. Arrears: KES ', (expected_amount - paid_amount),
+                        '. Balance: KES ', loan_balance,
+                        '. Kindly pay today via Paybill 4125097 A/C: ', l.loanAccountMPesa,
+                        '. For support call 0725000201 / 0781000201.'
+                    ) AS message
+                
+                FROM loans l
+                LEFT JOIN users u ON u.id = l.userID
+                WHERE loan_balance > 0 AND l.loanAccountMPesa not in (SELECT loan_id FROM special_cases)
+                """;
+
+        List<ApiMessageDTO> apiMessageDTOList = jdbcTemplateOne.query(sql,
+                (rs,i)-> new ApiMessageDTO(rs.getString("phone_number"), rs.getString("message"))
+        );
+        smsCore.sendBulkTransactionalSms(apiMessageDTOList);
     }
 }
