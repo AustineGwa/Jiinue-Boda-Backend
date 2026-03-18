@@ -368,11 +368,12 @@ public class SmsService {
     public void sendDaily8PmLoanUpdate() throws Exception {
         String sql = """
                 SELECT
-                    u.phone as phone_number,
+                    u.phone AS phone_number,
                     CONCAT(
                         'Dear ', u.first_name,
                         ', your loan is ', DATEDIFF(NOW(), disbursed_at),
-                        ' days active. Arrears: KES ', (expected_amount - paid_amount),
+                        ' days active. Arrears: KES ',
+                        GREATEST((expected_amount - paid_amount), 0),
                         '. Balance: KES ', loan_balance,
                         '. Kindly pay today via Paybill 4125097 A/C: ', l.loanAccountMPesa,
                         '. For support call 0725000201 / 0781000201.'
@@ -380,7 +381,8 @@ public class SmsService {
                 
                 FROM loans l
                 LEFT JOIN users u ON u.id = l.userID
-                WHERE loan_balance > 0 AND l.loanAccountMPesa not in (SELECT loan_id FROM special_cases)
+                WHERE loan_balance > 0
+                  AND l.loanAccountMPesa NOT IN (SELECT loan_id FROM special_cases);
                 """;
 
         List<ApiMessageDTO> apiMessageDTOList = jdbcTemplateOne.query(sql,
