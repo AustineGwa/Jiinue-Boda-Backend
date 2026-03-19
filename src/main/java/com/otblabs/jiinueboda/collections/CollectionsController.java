@@ -17,11 +17,9 @@ import java.util.Map;
 public class CollectionsController {
 
     private final CollectionsService collectionsService;
-    private final MpesaTransactionsService mpesaTransactionsService;
 
-    public CollectionsController(CollectionsService collectionsService, MpesaTransactionsService mpesaTransactionsService) {
+    public CollectionsController(CollectionsService collectionsService) {
         this.collectionsService = collectionsService;
-        this.mpesaTransactionsService = mpesaTransactionsService;
     }
 
     @GetMapping("/top/{num}")
@@ -35,9 +33,8 @@ public class CollectionsController {
         }
 
     }
-
     @GetMapping("/single/{transID}")
-        ResponseEntity<UserTransaction> getSingleTransaction(@PathVariable String transID){
+    ResponseEntity<UserTransaction> getSingleTransaction(@PathVariable String transID){
         try{
             UserTransaction transactionList = collectionsService.getSingleTransaction(transID);
             return ResponseEntity.ok(transactionList);
@@ -47,6 +44,19 @@ public class CollectionsController {
         }
 
     }
+
+    @GetMapping ("/loans/hourly-collection/{date}")
+    ResponseEntity<Object> getAllCollectionsPerhour(@PathVariable String date){
+        try{
+            List<HourlyCollection> hourlyCollection = collectionsService.getHourlyCollectionsPerDay(date);
+            return ResponseEntity.ok(hourlyCollection);
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
 
 
     @GetMapping ("/loans/disbursments/{month}/{year}")
@@ -71,43 +81,12 @@ public class CollectionsController {
         }
     }
 
-    @GetMapping ("/loans/bad-loans/{branch}")
-    ResponseEntity<Object> getAllBadLoans(@PathVariable int branch){
-        try{
-            return ResponseEntity.ok(collectionsService.getAllBadLoans(branch));
-        }catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @GetMapping ("/loans/red-flags/{branch}")
-    ResponseEntity<Object> getAllRedFlags(@PathVariable int branch){
-        try{
-            return ResponseEntity.ok(collectionsService.getAllRedFlags(branch));
-        }catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
     @GetMapping ("/loans/loans-by-varRatio/{branch}/{collectionStage}")
     ResponseEntity<Object> getAllLoansByVarianceRation(@PathVariable int branch,@PathVariable int collectionStage){
 
         try{
             Map<String,List<LoansByAge>> loansByAgeMap = collectionsService.getAllLoansByVarianceRation(branch,collectionStage);
             return ResponseEntity.ok(loansByAgeMap);
-        }catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @GetMapping ("/loans/hourly-collection/{date}")
-    ResponseEntity<Object> getAllCollectionsPerhour(@PathVariable String date){
-        try{
-            List<HourlyCollection> hourlyCollection = collectionsService.getHourlyCollectionsPerDay(date);
-            return ResponseEntity.ok(hourlyCollection);
         }catch (Exception exception){
             exception.printStackTrace();
             return ResponseEntity.internalServerError().build();
@@ -149,8 +128,32 @@ public class CollectionsController {
         }
     }
 
+    @GetMapping ("/loans/bad-loans/{branch}")
+    ResponseEntity<Object> getAllSpecialCasesLoans(@PathVariable int branch){
+        try{
+            return ResponseEntity.ok(collectionsService.getAllBadLoans(branch));
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping ("/loans/red-flags/{branch}")
+    ResponseEntity<Object> getAllRedFlags(@PathVariable int branch){
+        try{
+            return ResponseEntity.ok(collectionsService.getAllRedFlags(branch));
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /*
+    add link for requested recoveries
+     */
+
     @GetMapping("/loans/partners/{partnerId}")
-    ResponseEntity<List<DefaultList>> getPartnerLoans(@PathVariable int partnerId){
+    ResponseEntity<List<DefaultList>> getBranchLoans(@PathVariable int partnerId){
 
         try{
             List<DefaultList> defaulters = collectionsService.getActiveLoanDetailsForPartner(partnerId);
@@ -161,43 +164,7 @@ public class CollectionsController {
         }
     }
 
-    @GetMapping("/pending-reconciliations/{month}/{year}")
-    ResponseEntity<List<PendingCollection>> getPendingCollections(@PathVariable int month, @PathVariable int year){
 
-        try {
-
-            if (month == 0 && year == 0) {
-                return ResponseEntity.ok(collectionsService.getUnReconciledCollections());
-            } else if (month == 0) {
-                return ResponseEntity.ok(collectionsService.getUnReconciledCollections(year));
-            } else {
-                return ResponseEntity.ok(collectionsService.getUnReconciledCollections(month, year));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @PostMapping("/post-reconciliations")
-    ResponseEntity<Object> postTransaction(@RequestBody ReconciliationData reconciliationData){
-        try{
-            var res = collectionsService.postTransaction(reconciliationData);
-            mpesaTransactionsService.adjustUserLoanBalance(reconciliationData.getCorrectLoanId().trim());
-
-            mpesaTransactionsService.confirmPaymentRecieved(
-                    reconciliationData.getTransactionId(),
-                    String.valueOf(reconciliationData.getAmount()),
-                    reconciliationData.getCorrectLoanId()
-            );
-            return ResponseEntity.ok(res);
-        }catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-
-    }
 
     @PostMapping("/priority-profile-list")
     ResponseEntity<List<PriorityProfile>> getPriorityList(@RequestBody PriorityProfileFilter priorityProfileFilter){
@@ -221,17 +188,7 @@ public class CollectionsController {
         }
     }
 
-    @PostMapping("/reconcile-to-new-account")
-    ResponseEntity<Object> movePaymentToNewAccount(@RequestBody OldAccountNewAccountPayment oldAccountNewAccountPayment){
-        try{
-            int response = collectionsService.movePaymentToNewAccount(oldAccountNewAccountPayment);
-            return ResponseEntity.ok(response);
-        }catch(Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
 
-    }
 
     @GetMapping("/monthly-general-performance")
     ResponseEntity<MonthlyGeneralPerformance> getMonthlyGeneralPerformance(){
