@@ -124,17 +124,6 @@ public class LoansManagementController {
         }
     }
 
-    @GetMapping("/loan-history/{userId}")
-    ResponseEntity <ClientLoanData> getClientLoanData(@PathVariable int userId){
-        try{
-            return ResponseEntity.ok(loanManagementService.getClientLoanData(userId));
-        }catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-
-        }
-    }
-
     @GetMapping("/active/balances-tracker/{branch}")
     public ResponseEntity<List<PendingLoanData>> getActiveLoansBalances(@PathVariable int branch){
         try{

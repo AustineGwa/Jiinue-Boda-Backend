@@ -495,10 +495,6 @@ public class LoanManagementService {
         return loanData;
     }
 
-    public ClientLoanData getClientLoanData(int userId) {
-        return null;
-    }
-
 
     public List<PendingDisbursement> getAllPendingDisburesments() {
 
