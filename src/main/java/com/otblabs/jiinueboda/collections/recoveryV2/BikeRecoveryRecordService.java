@@ -88,7 +88,7 @@ public class BikeRecoveryRecordService {
         SystemUser systemUser = userService.getByEmailOrPhone(name);
 
         String sql = """
-                UPDATE recovery_radar SET admin_approval=? , admin_comment=?, admin_id=?,admin_comment_on='NOW()' WHERE loan_id=?
+                UPDATE recovery_radar SET admin_approval=? , admin_comment=?, admin_id=?,admin_comment_on=NOW() WHERE loan_id=?
                 """;
         jdbcTemplateOne.update(sql,adminRecoveryCommentDTO.isAdminApproval(), adminRecoveryCommentDTO.getAdminComment(),systemUser.getId(),adminRecoveryCommentDTO.getLoanAccount());
 

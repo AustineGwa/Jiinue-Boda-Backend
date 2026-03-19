@@ -43,6 +43,7 @@ public class BikeRecoveryRecordController {
         try{
             return ResponseEntity.ok( bikeRecoveryRecordService.saveUpdateAdminComment(adminRecoveryCommentDTO, principal.getName()));
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
 

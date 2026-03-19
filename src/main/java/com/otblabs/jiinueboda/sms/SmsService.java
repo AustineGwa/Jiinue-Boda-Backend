@@ -403,7 +403,7 @@ public class SmsService {
                    AND deleted_at IS NULL LIMIT 1
                 """;
 
-        String message = jdbcTemplateOne.queryForObject(sql,(rs,i) -> rs.getString("message"));
+        String message = jdbcTemplateOne.queryForObject(sql,(rs,i) -> rs.getString("message"),loanAccount);
 
         ApiMessageDTO apiMessageDTO = new ApiMessageDTO();
         apiMessageDTO.setReciver("254718728894");
