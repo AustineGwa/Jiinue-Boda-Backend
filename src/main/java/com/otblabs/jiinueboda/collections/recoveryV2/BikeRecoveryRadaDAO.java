@@ -27,6 +27,8 @@ public class BikeRecoveryRadaDAO {
     private boolean adminApproved;
     private String adminComment;
     private String adminCommentOn;
+    private String recoveredOn;
+    private String recoveryComment;
 }
 
 

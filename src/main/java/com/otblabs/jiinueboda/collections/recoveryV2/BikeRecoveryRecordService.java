@@ -42,17 +42,17 @@ public class BikeRecoveryRecordService {
     public List<BikeRecoveryRadaDAO> getAllRequestedRecovery() {
         String sql = """
                 SELECT loanAccountMpesa as Account,u.patner_id, u.id,u.first_name,u.last_name,u.phone,disbursed_at,
-                                                      (IFNULL(expected_amount,0) - IFNULL(paid_amount,0)) as variance,
-                                                      loan_term,ROUND(((IFNULL(expected_amount,0) - IFNULL(paid_amount,0))/loans.daily_amount_expected)) as varRatio,
-                                                      (DATEDIFF(now(), DATE(disbursed_at))) as loanAge,ca.l_plate,
-                                                      rr.creation_comment,rr.created_at as requested_on, rr.admin_approval,rr.admin_comment,rr.admin_comment_on
-                                                      FROM loans LEFT JOIN users u ON loans.userID = u.id
-                                                      left join client_assets ca on u.id = ca.user_id
-                                                      left join recovery_radar rr on rr.loan_id = loans.loanAccountMPesa
-                                                      WHERE loan_balance > 0
-                                                      AND expected_amount > paid_amount
-                                                      AND disbursed_at is not null
-                                                      And loanAccountMPesa IN (SELECT loan_id from recovery_radar WHERE deleted_at is null)
+                                                                      (IFNULL(expected_amount,0) - IFNULL(paid_amount,0)) as variance,
+                                                                      loan_term,ROUND(((IFNULL(expected_amount,0) - IFNULL(paid_amount,0))/loans.daily_amount_expected)) as varRatio,
+                                                                      (DATEDIFF(now(), DATE(disbursed_at))) as loanAge,ca.l_plate,
+                                                                      rr.creation_comment,rr.created_at as requested_on, rr.admin_approval,rr.admin_comment,rr.admin_comment_on, rr.recovered_on, rr.recovery_comment
+                                                                      FROM loans LEFT JOIN users u ON loans.userID = u.id
+                                                                      left join client_assets ca on u.id = ca.user_id
+                                                                      left join recovery_radar rr on rr.loan_id = loans.loanAccountMPesa
+                                                                      WHERE loan_balance > 0
+                                                                      AND expected_amount > paid_amount
+                                                                      AND disbursed_at is not null
+                                                                      And loanAccountMPesa IN (SELECT loan_id from recovery_radar WHERE deleted_at is null)
                 """;
 
         return jdbcTemplateOne.query(sql, (rs,i)-> mapRowToObject(rs));
@@ -78,6 +78,9 @@ public class BikeRecoveryRecordService {
         badLoans.setAdminApproved(rs.getBoolean("admin_approval"));
         badLoans.setAdminComment(rs.getString("admin_comment"));
         badLoans.setAdminCommentOn(rs.getString("admin_comment_on"));
+        badLoans.setRecoveredOn(rs.getString("recovered_on"));
+        badLoans.setRecoveryComment(rs.getString("recovery_comment"));
+
         return badLoans;
     }
 
@@ -95,6 +98,27 @@ public class BikeRecoveryRecordService {
         if(adminRecoveryCommentDTO.isAdminApproval()){
             smsService.sendBikeToRecovery(adminRecoveryCommentDTO.getLoanAccount());
         }
+
+        return 1;
+
+
+    }
+
+    @Transactional
+    public Integer saveConfirmRecovery(ConfirmRecoveryDTO confirmRecoveryDTO, String name) throws Exception {
+
+        SystemUser systemUser = userService.getByEmailOrPhone(name);
+
+        String sql = """
+                
+                UPDATE recovery_radar SET recovery_amount=?, recovery_comment=?, recovered_by=?,recovered_on=NOW() WHERE loan_id=?
+                """;
+        jdbcTemplateOne.update(sql,confirmRecoveryDTO.getRecoveryAmount(),
+                confirmRecoveryDTO.getRecoveryComment(),
+                systemUser.getId(),confirmRecoveryDTO.getLoanAccount());
+
+        smsService.removeRecovery(confirmRecoveryDTO.getLoanAccount());
+
 
         return 1;
 

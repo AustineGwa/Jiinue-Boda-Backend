@@ -60,5 +60,16 @@ public class BikeRecoveryRecordController {
 
     }
 
+    @PostMapping("/update-confirm-recovery")
+    ResponseEntity<Integer> saveConfirmRecovery(@RequestBody ConfirmRecoveryDTO confirmRecoveryDTO, Principal principal){
+        try{
+            return ResponseEntity.ok( bikeRecoveryRecordService.saveConfirmRecovery(confirmRecoveryDTO, principal.getName()));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
 
 }
