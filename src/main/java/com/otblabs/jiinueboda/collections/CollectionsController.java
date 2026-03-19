@@ -148,10 +148,6 @@ public class CollectionsController {
         }
     }
 
-    /*
-    add link for requested recoveries
-     */
-
     @GetMapping("/loans/partners/{partnerId}")
     ResponseEntity<List<DefaultList>> getBranchLoans(@PathVariable int partnerId){
 

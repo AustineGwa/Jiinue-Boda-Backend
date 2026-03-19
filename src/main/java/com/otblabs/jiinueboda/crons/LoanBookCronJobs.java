@@ -2,7 +2,7 @@ package com.otblabs.jiinueboda.crons;
 
 import com.otblabs.jiinueboda.collections.CollectionsService;
 import com.otblabs.jiinueboda.mail.backups.EmailBackupsService;
-import com.otblabs.jiinueboda.recovery.BikeRecoveryService;
+import com.otblabs.jiinueboda.collections.recovery.BikeRecoveryService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

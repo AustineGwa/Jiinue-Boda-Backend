@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.recovery.v2;
+package com.otblabs.jiinueboda.collections.recoveryV2;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BikeRecoveryRadar {
+public class BikeRecoveryRadarRequestDTO {
     private int id;
     private String loanId;
     private String createdAt;

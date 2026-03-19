@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.recovery;
+package com.otblabs.jiinueboda.collections.recovery;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

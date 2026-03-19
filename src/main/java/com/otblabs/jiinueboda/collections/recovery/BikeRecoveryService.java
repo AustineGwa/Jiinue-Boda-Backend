@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.recovery;
+package com.otblabs.jiinueboda.collections.recovery;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

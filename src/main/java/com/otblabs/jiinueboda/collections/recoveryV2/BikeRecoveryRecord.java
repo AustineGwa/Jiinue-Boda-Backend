@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.recovery.v2;
+package com.otblabs.jiinueboda.collections.recoveryV2;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

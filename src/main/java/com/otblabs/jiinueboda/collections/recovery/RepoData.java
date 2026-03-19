@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.recovery;
+package com.otblabs.jiinueboda.collections.recovery;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BikeReleaseData {
+public class RepoData {
     int userId;
     int recoveryId;
-    int storageAmount;
-    String releaseDate;
-    String releaseComment;
+    int recoveryAmount;
+    String recoveryDate;
+    String recoveryComment;
+
 }

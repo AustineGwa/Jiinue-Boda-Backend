@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.recovery;
+package com.otblabs.jiinueboda.collections.recovery;
 
 import lombok.*;
 
