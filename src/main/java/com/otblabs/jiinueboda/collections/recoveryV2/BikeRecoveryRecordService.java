@@ -1,19 +1,14 @@
 package com.otblabs.jiinueboda.collections.recoveryV2;
 
-import com.otblabs.jiinueboda.collections.CollectionsService;
-import com.otblabs.jiinueboda.collections.models.BadLoans;
-import com.otblabs.jiinueboda.collections.models.LoansByAge;
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
-import org.jspecify.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,7 +13,7 @@ public class BikeRecoveryRadaDAO {
     private int id;
     private String firstName;
     private String lastName;
-    private String Account;
+    private String account;
     private int branch;
     private String phone;
     private int loanTerm;
