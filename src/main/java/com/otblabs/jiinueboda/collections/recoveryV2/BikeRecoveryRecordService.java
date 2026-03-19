@@ -78,7 +78,7 @@ public class BikeRecoveryRecordService {
         badLoans.setAdminApproved(rs.getBoolean("admin_approval"));
         badLoans.setAdminComment(rs.getString("admin_comment"));
         badLoans.setAdminCommentOn(rs.getString("admin_comment_on"));
-        badLoans.setRecoveredOn(rs.getBoolean("recovered_on"));
+        badLoans.setRecoveredOn(rs.getString("recovered_on"));
         badLoans.setRecoveryComment(rs.getString("recovery_comment"));
 
         return badLoans;
