@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,6 +25,10 @@ public class BikeRecoveryRadaDAO {
     private String disbursedAt;
     private String numberPlate;
     private String creationComment;
+    private LocalDateTime requestedOn;
+    private boolean adminApproved;
+    private String adminComment;
+    private LocalDateTime adminCommentOn;
 }
 
 

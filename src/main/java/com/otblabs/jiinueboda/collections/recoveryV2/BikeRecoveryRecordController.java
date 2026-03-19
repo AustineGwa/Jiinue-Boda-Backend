@@ -3,6 +3,7 @@ package com.otblabs.jiinueboda.collections.recoveryV2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -15,16 +16,6 @@ public class BikeRecoveryRecordController {
         this.bikeRecoveryRecordService = bikeRecoveryRecordService;
     }
 
-    @PostMapping("/create-new")
-    ResponseEntity<Integer> saveToRecoveryRadar(@RequestBody BikeRecoveryRadarRequestDTO bikeRecoveryRadarRequestDTO){
-        try{
-            return ResponseEntity.ok( bikeRecoveryRecordService.insertRecoveryRadar(bikeRecoveryRadarRequestDTO));
-        }catch (Exception e){
-            return ResponseEntity.internalServerError().build();
-        }
-
-    }
-
     @GetMapping("/requests/all")
     ResponseEntity<List<BikeRecoveryRadaDAO>> getAllRequestedRecovery(){
         try{
@@ -34,4 +25,26 @@ public class BikeRecoveryRecordController {
         }
 
     }
+
+    @PostMapping("/create-new")
+    ResponseEntity<Integer> saveToRecoveryRadar(@RequestBody BikeRecoveryRadarRequestDTO bikeRecoveryRadarRequestDTO, Principal principal){
+        try{
+            return ResponseEntity.ok( bikeRecoveryRecordService.insertRecoveryRadar(bikeRecoveryRadarRequestDTO, principal.getName()));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
+    @PostMapping("/update-admin-comment")
+    ResponseEntity<Integer> saveUpdateAdminComment(@RequestBody AdminRecoveryCommentDTO adminRecoveryCommentDTO, Principal principal){
+        try{
+            return ResponseEntity.ok( bikeRecoveryRecordService.saveUpdateAdminComment(adminRecoveryCommentDTO, principal.getName()));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
+
 }
