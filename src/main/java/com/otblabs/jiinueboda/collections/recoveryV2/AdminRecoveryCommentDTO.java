@@ -12,4 +12,5 @@ import lombok.Setter;
 public class AdminRecoveryCommentDTO {
     private boolean adminApproval;
     private String adminComment;
+    private String loanAccount;
 }

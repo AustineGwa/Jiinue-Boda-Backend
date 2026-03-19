@@ -25,10 +25,10 @@ public class BikeRecoveryRadaDAO {
     private String disbursedAt;
     private String numberPlate;
     private String creationComment;
-    private LocalDateTime requestedOn;
+    private String requestedOn;
     private boolean adminApproved;
     private String adminComment;
-    private LocalDateTime adminCommentOn;
+    private String adminCommentOn;
 }
 
 

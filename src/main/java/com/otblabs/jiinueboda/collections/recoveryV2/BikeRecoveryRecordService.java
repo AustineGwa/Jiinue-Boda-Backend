@@ -3,11 +3,13 @@ package com.otblabs.jiinueboda.collections.recoveryV2;
 import com.otblabs.jiinueboda.collections.CollectionsService;
 import com.otblabs.jiinueboda.collections.models.BadLoans;
 import com.otblabs.jiinueboda.collections.models.LoansByAge;
+import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
 import org.jspecify.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,10 +21,12 @@ public class BikeRecoveryRecordService {
 
     private final JdbcTemplate jdbcTemplateOne;
     private final UserService userService;
+    private final SmsService smsService;
 
-    public BikeRecoveryRecordService(JdbcTemplate jdbcTemplateOne, UserService userService) {
+    public BikeRecoveryRecordService(JdbcTemplate jdbcTemplateOne, UserService userService, SmsService smsService) {
         this.jdbcTemplateOne = jdbcTemplateOne;
         this.userService = userService;
+        this.smsService = smsService;
     }
 
     public int insertRecoveryRadar(BikeRecoveryRadarRequestDTO bikeRecoveryRadarRequestDTO, String user) throws Exception {
@@ -71,21 +75,30 @@ public class BikeRecoveryRecordService {
         badLoans.setDisbursedAt(rs.getString("disbursed_at"));
         badLoans.setNumberPlate(rs.getString("l_plate"));
         badLoans.setCreationComment(rs.getString("creation_comment"));
-        badLoans.setRequestedOn(LocalDateTime.parse(rs.getString("requested_on")));
+        badLoans.setRequestedOn(rs.getString("requested_on"));
         badLoans.setAdminApproved(rs.getBoolean("admin_approval"));
         badLoans.setAdminComment(rs.getString("admin_comment"));
-        badLoans.setAdminCommentOn(LocalDateTime.parse(rs.getString("admin_comment_on")));
+        badLoans.setAdminCommentOn(rs.getString("admin_comment_on"));
         return badLoans;
     }
 
 
-    public Integer saveUpdateAdminComment(AdminRecoveryCommentDTO adminRecoveryCommentDTO, String name) {
+    @Transactional
+    public Integer saveUpdateAdminComment(AdminRecoveryCommentDTO adminRecoveryCommentDTO, String name) throws Exception {
 
         SystemUser systemUser = userService.getByEmailOrPhone(name);
 
         String sql = """
-                UPDATE recovery_radar SET admin_approval=? , admin_comment=?, admin_id=?,admin_comment_on='NOW()'
+                UPDATE recovery_radar SET admin_approval=? , admin_comment=?, admin_id=?,admin_comment_on='NOW()' WHERE loan_id=?
                 """;
-        return jdbcTemplateOne.update(sql,adminRecoveryCommentDTO.isAdminApproval(), adminRecoveryCommentDTO.getAdminComment(),systemUser.getId());
+        jdbcTemplateOne.update(sql,adminRecoveryCommentDTO.isAdminApproval(), adminRecoveryCommentDTO.getAdminComment(),systemUser.getId(),adminRecoveryCommentDTO.getLoanAccount());
+
+        if(adminRecoveryCommentDTO.isAdminApproval()){
+            smsService.sendBikeToRecovery(adminRecoveryCommentDTO.getLoanAccount());
+        }
+
+        return 1;
+
+
     }
 }

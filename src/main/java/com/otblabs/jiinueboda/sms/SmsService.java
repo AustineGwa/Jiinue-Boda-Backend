@@ -390,4 +390,24 @@ public class SmsService {
         );
         smsCore.sendBulkTransactionalSms(apiMessageDTOList);
     }
+
+    public void sendBikeToRecovery(String loanAccount) throws Exception {
+
+        String sql = """
+                SELECT CONCAT(
+                       'Hello this bike ',
+                      l_plate ,
+                       ' has been approved for recover please add to tracking app'
+                       ) as message
+                    from client_assets where user_id = (select userID from loans WHERE loanAccountMPesa=?)
+                   AND deleted_at IS NULL LIMIT 1
+                """;
+
+        String message = jdbcTemplateOne.queryForObject(sql,(rs,i) -> rs.getString("message"));
+
+        ApiMessageDTO apiMessageDTO = new ApiMessageDTO();
+        apiMessageDTO.setReciver("254718728894");
+        apiMessageDTO.setMessage(message);
+        smsCore.sendSingleTransactionalSms(apiMessageDTO);
+    }
 }
