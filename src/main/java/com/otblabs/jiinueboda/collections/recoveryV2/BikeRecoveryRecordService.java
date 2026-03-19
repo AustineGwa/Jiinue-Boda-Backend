@@ -36,7 +36,11 @@ public class BikeRecoveryRecordService {
         String sql = """
                 INSERT INTO recovery_radar(loan_id,creation_comment,created_by,created_at) VALUES(?,?,?,NOW())
                 """;
-        return jdbcTemplateOne.update(sql, bikeRecoveryRadarRequestDTO.getLoanId(), bikeRecoveryRadarRequestDTO.getCreationComment(),systemUser.getId());
+        return jdbcTemplateOne.update(sql,
+                bikeRecoveryRadarRequestDTO.getLoanId(),
+                bikeRecoveryRadarRequestDTO.getCreationComment(),
+                systemUser.getId()
+        );
 
     }
 

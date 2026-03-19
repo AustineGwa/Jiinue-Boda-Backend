@@ -21,6 +21,7 @@ public class BikeRecoveryRecordController {
         try{
             return ResponseEntity.ok(bikeRecoveryRecordService.getAllRequestedRecovery());
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
 
@@ -31,6 +32,7 @@ public class BikeRecoveryRecordController {
         try{
             return ResponseEntity.ok( bikeRecoveryRecordService.insertRecoveryRadar(bikeRecoveryRadarRequestDTO, principal.getName()));
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
 
