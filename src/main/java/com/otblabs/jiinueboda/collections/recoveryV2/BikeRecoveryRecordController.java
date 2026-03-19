@@ -27,6 +27,17 @@ public class BikeRecoveryRecordController {
 
     }
 
+    @GetMapping("/approved-recoveries/all")
+    ResponseEntity<List<ApprovedRecovery>> getAllApprovedRecovery(){
+        try{
+            return ResponseEntity.ok(bikeRecoveryRecordService.getAllApprovedRecovery());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
     @PostMapping("/create-new")
     ResponseEntity<Integer> saveToRecoveryRadar(@RequestBody BikeRecoveryRadarRequestDTO bikeRecoveryRadarRequestDTO, Principal principal){
         try{

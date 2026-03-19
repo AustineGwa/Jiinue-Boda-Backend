@@ -406,7 +406,7 @@ public class SmsService {
         String message = jdbcTemplateOne.queryForObject(sql,(rs,i) -> rs.getString("message"),loanAccount);
 
         ApiMessageDTO apiMessageDTO = new ApiMessageDTO();
-        apiMessageDTO.setReciver("254718728894");
+        apiMessageDTO.setReciver("254757028794");
         apiMessageDTO.setMessage(message);
         smsCore.sendSingleTransactionalSms(apiMessageDTO);
     }

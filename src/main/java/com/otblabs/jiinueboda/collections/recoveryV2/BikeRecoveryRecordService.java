@@ -100,4 +100,42 @@ public class BikeRecoveryRecordService {
 
 
     }
+
+    public List<ApprovedRecovery> getAllApprovedRecovery() {
+
+        String sql = """
+                SELECT loanAccountMpesa as Account, u.id,u.first_name,u.last_name,u.phone,disbursed_at,
+                                                                      (IFNULL(expected_amount,0) - IFNULL(paid_amount,0)) as variance,
+                                                                      loan_term,ROUND(((IFNULL(expected_amount,0) - IFNULL(paid_amount,0))/loans.daily_amount_expected)) as varRatio,
+                                                                      ca.l_plate,
+                                                                      rr.created_at as requested_on
+                                                                      FROM loans LEFT JOIN users u ON loans.userID = u.id
+                                                                      left join client_assets ca on u.id = ca.user_id
+                                                                      left join recovery_radar rr on rr.loan_id = loans.loanAccountMPesa
+                                                                      WHERE loan_balance > 0
+                                                                      AND expected_amount > paid_amount
+                                                                      AND admin_approval = true
+                                                                      And recovered_on is null
+                                                                      AND disbursed_at is not null
+                                                                      And loanAccountMPesa IN (SELECT loan_id from recovery_radar WHERE deleted_at is null)
+                """;
+
+        return jdbcTemplateOne.query(sql, (rs,i)-> mapRowToApprovedRecovery(rs));
+
+    }
+
+    private ApprovedRecovery mapRowToApprovedRecovery(ResultSet rs) throws SQLException {
+        ApprovedRecovery approvedRecovery = new ApprovedRecovery();
+        approvedRecovery.setId(rs.getInt("id"));
+        approvedRecovery.setFirstName(rs.getString("first_name"));
+        approvedRecovery.setLastName(rs.getString("last_name"));
+        approvedRecovery.setAccount(rs.getString("Account"));
+        approvedRecovery.setPhone(rs.getString("phone"));
+        approvedRecovery.setVariance(rs.getInt("variance"));
+        approvedRecovery.setVarRatio(rs.getInt("varRatio"));
+        approvedRecovery.setDisbursedAt(rs.getString("disbursed_at"));
+        approvedRecovery.setNumberPlate(rs.getString("l_plate"));
+        approvedRecovery.setRequestedOn(rs.getString("requested_on"));
+        return approvedRecovery;
+    }
 }
