@@ -41,18 +41,20 @@ public class BikeRecoveryRecordService {
 
     public List<BikeRecoveryRadaDAO> getAllRequestedRecovery() {
         String sql = """
-                SELECT loanAccountMpesa as Account,u.patner_id, u.id,u.first_name,u.last_name,u.phone,disbursed_at,
-                                                                      (IFNULL(expected_amount,0) - IFNULL(paid_amount,0)) as variance,
-                                                                      loan_term,ROUND(((IFNULL(expected_amount,0) - IFNULL(paid_amount,0))/loans.daily_amount_expected)) as varRatio,
-                                                                      (DATEDIFF(now(), DATE(disbursed_at))) as loanAge,ca.l_plate,
-                                                                      rr.creation_comment,rr.created_at as requested_on, rr.admin_approval,rr.admin_comment,rr.admin_comment_on, rr.recovered_on, rr.recovery_comment
-                                                                      FROM loans LEFT JOIN users u ON loans.userID = u.id
-                                                                      left join client_assets ca on u.id = ca.user_id
-                                                                      left join recovery_radar rr on rr.loan_id = loans.loanAccountMPesa
-                                                                      WHERE loan_balance > 0
-                                                                      AND expected_amount > paid_amount
-                                                                      AND disbursed_at is not null
-                                                                      And loanAccountMPesa IN (SELECT loan_id from recovery_radar WHERE deleted_at is null)
+                 SELECT loanAccountMpesa as Account,u.patner_id, u.id,u.first_name,u.last_name,u.phone,disbursed_at,
+                  (IFNULL(expected_amount,0) - IFNULL(paid_amount,0)) as variance,
+                  loan_term,ROUND(((IFNULL(expected_amount,0) - IFNULL(paid_amount,0))/loans.daily_amount_expected)) as varRatio,
+                  (DATEDIFF(now(), DATE(disbursed_at))) as loanAge,ca.l_plate,
+                  rr.creation_comment,rr.created_at as requested_on, rr.admin_approval,rr.admin_comment,rr.admin_comment_on,
+                  rr.recovered_on, rr.recovery_comment, rr.released_on, rr.release_notes
+                  FROM loans LEFT JOIN users u ON loans.userID = u.id
+                  left join client_assets ca on u.id = ca.user_id
+                  left join recovery_radar rr on rr.loan_id = loans.loanAccountMPesa
+                  WHERE loan_balance > 0
+                  AND expected_amount > paid_amount
+                  AND disbursed_at is not null
+                  AND ca.deleted_at is null
+                  And loanAccountMPesa IN (SELECT loan_id from recovery_radar WHERE deleted_at is null)
                 """;
 
         return jdbcTemplateOne.query(sql, (rs,i)-> mapRowToObject(rs));
@@ -80,6 +82,8 @@ public class BikeRecoveryRecordService {
         badLoans.setAdminCommentOn(rs.getString("admin_comment_on"));
         badLoans.setRecoveredOn(rs.getString("recovered_on"));
         badLoans.setRecoveryComment(rs.getString("recovery_comment"));
+        badLoans.setReleasedOn(rs.getString("released_on"));
+        badLoans.setReleaseComment(rs.getString("release_notes"));
 
         return badLoans;
     }

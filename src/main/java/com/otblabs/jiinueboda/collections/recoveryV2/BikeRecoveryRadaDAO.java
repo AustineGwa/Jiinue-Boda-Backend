@@ -29,6 +29,8 @@ public class BikeRecoveryRadaDAO {
     private String adminCommentOn;
     private String recoveredOn;
     private String recoveryComment;
+    private String releasedOn;
+    private String releaseComment;
 }
 
 

@@ -29,9 +29,6 @@ public class FintechApplication implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 		   System.out.println("Application started , start scheduled services");
 
-//           runnerTest.topUpLoan(7408,"254729005543","X95263817A_topup");
-//           runnerTest.topUpLoan(10141,"254711317696","T39275681X_topup");
-
     }
 
  }
