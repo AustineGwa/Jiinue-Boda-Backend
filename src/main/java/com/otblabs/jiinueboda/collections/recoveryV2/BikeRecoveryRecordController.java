@@ -71,5 +71,16 @@ public class BikeRecoveryRecordController {
 
     }
 
+    @PostMapping("/update-confirm-release")
+    ResponseEntity<Integer> saveConfirmRelease(@RequestBody AssetReleaseDTO assetReleaseDTO, Principal principal){
+        try{
+            return ResponseEntity.ok( bikeRecoveryRecordService.assetReleaseDTO(assetReleaseDTO, principal.getName()));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
 
 }

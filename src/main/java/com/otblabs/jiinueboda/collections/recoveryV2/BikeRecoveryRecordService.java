@@ -162,4 +162,58 @@ public class BikeRecoveryRecordService {
         approvedRecovery.setRequestedOn(rs.getString("requested_on"));
         return approvedRecovery;
     }
+
+    public Integer assetReleaseDTO(AssetReleaseDTO dto, String name) {
+
+        SystemUser systemUser = userService.getByEmailOrPhone(name);
+
+        String sql = """
+        UPDATE recovery_radar SET
+              release_type = ?,
+              release_notes = ?,
+              sale_amount = ?,
+              checklist_loan_clearance = ?,
+              checklist_sale_agreement = ?,
+              checklist_recovery_fees_paid = ?,
+              checklist_storage_fees_cleared = ?,
+              checklist_tracker_cleared = ?,
+              checklist_proof_loan_clearance = ?,
+              checklist_proof_sale_agreement = ?,
+              checklist_proof_recovery_fees_paid = ?,
+              checklist_proof_storage_fees_cleared = ?,
+              checklist_proof_tracker_cleared = ?,
+              ops_manager_name = ?,
+              ops_manager_comment = ?,
+              released_by = ?,
+              released_on = NOW()
+          WHERE loan_id = ?
+    """;
+
+        return jdbcTemplateOne.update(
+                sql,
+                dto.getReleaseType(),
+                dto.getReleaseNotes(),
+                dto.getSaleAmount(),
+
+                // checklist
+                dto.getChecklist().getLoanClearance(),
+                dto.getChecklist().getSaleAgreement(),
+                dto.getChecklist().getRecoveryFeesPaid(),
+                dto.getChecklist().getStorageFeesCleared(),
+                dto.getChecklist().getTrackerCleared(),
+
+                // checklist proofs
+                dto.getChecklistProofs().getLoanClearance(),
+                dto.getChecklistProofs().getSaleAgreement(),
+                dto.getChecklistProofs().getRecoveryFeesPaid(),
+                dto.getChecklistProofs().getStorageFeesCleared(),
+                dto.getChecklistProofs().getTrackerCleared(),
+
+                // ops
+                dto.getOpsManagerName(),
+                dto.getOpsManagerComment(),
+                systemUser.getId(),
+                dto.getLoanAccount()
+        );
+    }
 }
