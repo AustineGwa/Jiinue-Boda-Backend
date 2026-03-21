@@ -296,18 +296,6 @@ public class UserService {
         },loanAccount);
     }
 
-    public SystemUser getUserByFuelLoanId(String loanId){
-        String sql ="SELECT * FROM users WHERE id = (SELECT userID FROM fuel_loan WHERE loanId =?)";
-
-        return jdbcTemplateOne.queryForObject(sql,(rs,i)-> {
-            try {
-                return setUser(rs);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        },loanId);
-    }
-
     public LoanPayeeDetail getLoanPayeeDetail(String conversationId) {
         String sqlGetPayeeDetail = """
                     SELECT i.party_b, i.occasion, i.app_id, (SELECT shotcode from mpesa_apps WHERE id = i.app_id) as shotcode,
