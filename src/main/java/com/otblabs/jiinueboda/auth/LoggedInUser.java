@@ -23,5 +23,4 @@ public class LoggedInUser {
     private String password;
     private Usertype usertype;
     private int aprovalLevel;
-//    private List<String> userRoles;
 }

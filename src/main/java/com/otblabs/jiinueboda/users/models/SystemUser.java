@@ -1,6 +1,6 @@
 package com.otblabs.jiinueboda.users.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.*;
 
 import java.util.List;
@@ -21,8 +21,6 @@ public class SystemUser {
     private String refferalId;
     private String phone;
     private String nationalID;
-//    private Usertype usertype;
-//    private int aprovalLevel;
     private String createdAt;
     private int createdBy;
     private int groupId;
