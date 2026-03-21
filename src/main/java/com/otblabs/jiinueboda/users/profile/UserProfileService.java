@@ -35,11 +35,6 @@ public class UserProfileService {
         return kycDocument;
     }
 
-
-    public List<ProfileData> getClientProfile(int userId) {
-        return null;
-    }
-
     public ProfileLoanStanding getProfileLoanStanding(int userId) {
         String sql = """
                 select

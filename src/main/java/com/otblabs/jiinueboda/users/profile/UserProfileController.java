@@ -43,18 +43,6 @@ public class UserProfileController {
     }
 
 
-    @GetMapping("/kyc/asset-files/{userId}")
-    ResponseEntity <List<ProfileData>> getClientProfile(@PathVariable int userId){
-        try{
-            return ResponseEntity.ok(userProfileService.getClientProfile(userId));
-        }catch (Exception exception){
-            exception.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-
-        }
-    }
-
-
     @GetMapping("/kyc/kyc-docs/{userId}")
     ResponseEntity <List<KycDocument>> getAllUserKycDocuments(@PathVariable int userId){
         try{
