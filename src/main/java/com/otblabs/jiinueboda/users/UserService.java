@@ -273,6 +273,16 @@ public class UserService {
         }
     }
 
+    public UserRoleManager getUserRoles(String user){
+        String sql = "SELECT T0.*, T1.* FROM users T0  LEFT JOIN user_roles T1 ON T0.id =  T1.user_id WHERE T0.email=? OR T0.phone = ?";
+
+        try{
+            return jdbcTemplateOne.queryForObject(sql, (resultSet, i) -> setUserRoles(resultSet),user, UtilityFunctions.formatPhoneNumber(user));
+        }catch (Exception e){
+            return  null;
+        }
+    }
+
     public SystemUser getUserByLoanAccount(String loanAccount){
         String sql ="SELECT * FROM users WHERE id = (SELECT userID FROM loans WHERE loanAccountMPesa =?)";
 
@@ -398,9 +408,19 @@ public class UserService {
         loggedInUser.setLastName(resultSet.getString("last_name"));
         loggedInUser.setPassword(resultSet.getString("password"));
         loggedInUser.setUsertype(Usertype.valueOf(resultSet.getString("usertype")));
-        loggedInUser.setAprovalLevel(resultSet.getInt("uproval_level"));
-
         return loggedInUser;
+
+    }
+
+    private UserRoleManager setUserRoles(ResultSet resultSet) throws SQLException {
+        UserRoleManager userRoleManager = new UserRoleManager();
+        userRoleManager.setUserId(resultSet.getInt("id"));
+        userRoleManager.setUsertype(Usertype.valueOf(resultSet.getString("usertype")));
+        userRoleManager.setCanApproveExpense(resultSet.getBoolean("can_approve_expense"));
+        userRoleManager.setCanApproveLoanLevel1(resultSet.getBoolean("can_approve_loan_level_1"));
+        userRoleManager.setCanApproveLoanLevel2(resultSet.getBoolean("can_approve_loan_level_2"));
+
+        return userRoleManager;
 
     }
 

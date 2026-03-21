@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 
 @Getter
 @Setter
@@ -22,5 +21,4 @@ public class LoggedInUser {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Usertype usertype;
-    private int aprovalLevel;
 }

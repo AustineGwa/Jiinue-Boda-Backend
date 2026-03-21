@@ -9,6 +9,7 @@ import com.otblabs.jiinueboda.integrations.momo.mpesa.b2c.models.B2CRequestRespo
 import com.otblabs.jiinueboda.sms.SmsService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
 import com.otblabs.jiinueboda.users.UserService;
+import com.otblabs.jiinueboda.users.models.UserRoleManager;
 import com.otblabs.jiinueboda.users.models.Usertype;
 import com.otblabs.jiinueboda.utility.UtilityFunctions;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -175,7 +176,7 @@ public class LendingService {
 
     public boolean updateLoanStatus(String user, LoanApprovalRequest loanApprovalRequest) throws Exception {
 
-        LoggedInUser loggedInUser = userService.getLoggedInUser(user);
+        UserRoleManager loggedInUser = userService.getUserRoles(user);
 
 
         if (loggedInUser.getUsertype() != Usertype.Admin) {
@@ -186,7 +187,7 @@ public class LendingService {
 
         switch (loanApprovalRequest.getApprovalLevel()) {
             case "ONE" -> {
-                if (loggedInUser.getAprovalLevel() != 1) {
+                if (!loggedInUser.isCanApproveLoanLevel1()) {
                     throw new RuntimeException("Operation not permitted for this user");
                 }
 
@@ -201,7 +202,7 @@ public class LendingService {
 
             }
             case "TWO" -> {
-                if (loggedInUser.getAprovalLevel() != 2 && loggedInUser.getId() != 2) {
+                if (!loggedInUser.isCanApproveLoanLevel2()) {
                     throw new RuntimeException("Operation not permitted for this user");
                 }
 
@@ -222,9 +223,9 @@ public class LendingService {
 
                 // Send SMS notification based on loan status
                 if ("APPROVED".equals(loanApprovalRequest.getUpdatedStatus())) {
-                    message = "Dear " + loggedInUser.getFirstName() + ", Congratulations! Your Loan Has Been APPROVED. Funds Should Disburse To This Number Shortly. Karibu Jiinue";
+                    message = "Congratulations! Your Loan Has Been APPROVED. Funds Should Disburse To This Number Shortly. Karibu Jiinue";
                 } else {
-                    message = "Dear " + loggedInUser.getFirstName() + ", Unfortunately Your Loan Has Been DENIED. Please Contact Us For More Details. Karibu Jiinue";
+                    message = "Unfortunately Your Loan Has Been DENIED. Please Contact Us For More Details. Karibu Jiinue";
                 }
 
 //                smsService.sendSMS(systemUser.getPhone(), message, 3);

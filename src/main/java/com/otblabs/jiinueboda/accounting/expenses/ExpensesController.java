@@ -4,6 +4,7 @@ import com.otblabs.jiinueboda.accounting.expenses.models.CreateExpense;
 import com.otblabs.jiinueboda.accounting.expenses.models.PendingExpense;
 import com.otblabs.jiinueboda.auth.LoggedInUser;
 import com.otblabs.jiinueboda.users.UserService;
+import com.otblabs.jiinueboda.users.models.UserRoleManager;
 import com.otblabs.jiinueboda.users.models.Usertype;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -87,18 +88,18 @@ public class ExpensesController {
     @PostMapping("/approve-new/{approvalStatus}")
     public ResponseEntity<Boolean> approvePendingExpenses(@RequestBody PendingExpense pendingExpense, @PathVariable boolean approvalStatus,Principal principal) {
 
-        LoggedInUser loggedInUser = userService.getLoggedInUser(principal.getName());
+        UserRoleManager userRoleManager = userService.getUserRoles(principal.getName());
 
-        if (loggedInUser.getUsertype() != Usertype.Admin) {
+        if (userRoleManager.getUsertype() != Usertype.Admin) {
             throw new RuntimeException("Operation not permitted for this user");
         }
 
-        if( loggedInUser.getAprovalLevel() == 0){
+        if( !userRoleManager.isCanApproveExpense()){
             throw new RuntimeException("Operation not permitted for this user");
         }
 
         try {
-            return  ResponseEntity.ok(expensesService.approvePendingExpenses(pendingExpense,approvalStatus,loggedInUser.getId()));
+            return  ResponseEntity.ok(expensesService.approvePendingExpenses(pendingExpense,approvalStatus,userRoleManager.getUserId()));
         }catch (Exception exception){
             exception.printStackTrace();
             return ResponseEntity.unprocessableEntity().build();
