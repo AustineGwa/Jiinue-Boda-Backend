@@ -1,6 +1,7 @@
 package com.otblabs.jiinueboda.security.springsecurity;
 
 
+import com.otblabs.jiinueboda.auth.LoggedInUser;
 import com.otblabs.jiinueboda.investors.InvestmentManagementService;
 import com.otblabs.jiinueboda.investors.models.Investor;
 import com.otblabs.jiinueboda.patners.Partner;
@@ -35,14 +36,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList();
+
 //            List<SimpleGrantedAuthority> grantedAuthorities = roleRepo.findAllByUserId(user.get().getId()).stream()
 //            .map(r -> r.getRole()).map(r -> new SimpleGrantedAuthority(r)).collect(Collectors.toList());
 
-        SystemUser systemUser = userService.getByEmailOrPhone(email);
+        LoggedInUser loggedInUser = userService.getLoggedInUser(email);
 
         //check main user login
-        if (systemUser != null){
-            return new User(systemUser.getEmail(), String.valueOf(systemUser.getPassword()), grantedAuthorities);
+        if (loggedInUser != null){
+            return new User(loggedInUser.getEmail(), String.valueOf(loggedInUser.getPassword()), grantedAuthorities);
         } else {
             //check partner login
             Partner partner = partnersService.getByEmailOrPhone(email);

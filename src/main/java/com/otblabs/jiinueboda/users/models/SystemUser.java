@@ -20,17 +20,13 @@ public class SystemUser {
     private String refferedBy;
     private String refferalId;
     private String phone;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
     private String nationalID;
-    private Usertype usertype;
-    private int aprovalLevel;
+//    private Usertype usertype;
+//    private int aprovalLevel;
     private String createdAt;
     private int createdBy;
     private int groupId;
     private int appId;
-    private List<String> userRoles;
-    private UserProfile userProfile;
     private int partnerId;
     private boolean onlineRider;
 

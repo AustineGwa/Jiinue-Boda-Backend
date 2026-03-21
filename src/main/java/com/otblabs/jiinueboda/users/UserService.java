@@ -1,5 +1,6 @@
 package com.otblabs.jiinueboda.users;
 
+import com.otblabs.jiinueboda.auth.LoggedInUser;
 import com.otblabs.jiinueboda.loans.models.LoanPayeeDetail;
 import com.otblabs.jiinueboda.loans.models.UserLoanDetail;
 import com.otblabs.jiinueboda.sms.SmsService;
@@ -262,19 +263,15 @@ public class UserService {
             }
     }
 
-//    public SystemUser getUserByWalletAccount(String walletAccount) {
-//
-//        String sql ="SELECT * FROM users WHERE id = (SELECT user_id FROM user_wallet WHERE wallet_account_number ='12345')";
-//
-//        return jdbcTemplateOne.queryForObject(sql,(rs,i)-> {
-//            try {
-//                return setUser(rs);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        },walletAccount);
-//
-//    }
+    public LoggedInUser getLoggedInUser(String user){
+        String sql = "SELECT T0.*, T1.* FROM users T0  LEFT JOIN user_roles T1 ON T0.id =  T1.user_id WHERE T0.email=? OR T0.phone = ?";
+
+        try{
+            return jdbcTemplateOne.queryForObject(sql, (resultSet, i) -> setLoggedInUser(resultSet),user, UtilityFunctions.formatPhoneNumber(user));
+        }catch (Exception e){
+            return  null;
+        }
+    }
 
     public SystemUser getUserByLoanAccount(String loanAccount){
         String sql ="SELECT * FROM users WHERE id = (SELECT userID FROM loans WHERE loanAccountMPesa =?)";
@@ -392,13 +389,27 @@ public class UserService {
         return jdbcTemplateOne.query(sql,(rs,i) ->setUser(rs),groupId,"Client");
     }
 
+    private LoggedInUser setLoggedInUser(ResultSet resultSet) throws SQLException {
+        LoggedInUser loggedInUser = new LoggedInUser();
+        loggedInUser.setId(resultSet.getInt("id"));
+        loggedInUser.setEmail(resultSet.getString("email"));
+        loggedInUser.setPhone(resultSet.getString("phone"));
+        loggedInUser.setFirstName(resultSet.getString("first_name"));
+        loggedInUser.setLastName(resultSet.getString("last_name"));
+        loggedInUser.setPassword(resultSet.getString("password"));
+        loggedInUser.setUsertype(Usertype.valueOf(resultSet.getString("usertype")));
+        loggedInUser.setAprovalLevel(resultSet.getInt("uproval_level"));
+
+        return loggedInUser;
+
+    }
+
     private SystemUser setUser(ResultSet resultSet) throws SQLException {
         SystemUser user = new SystemUser();
         user.setId(resultSet.getInt("id"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setLastName(resultSet.getString("last_name"));
         user.setEmail(resultSet.getString("email"));
-        user.setPassword(resultSet.getString("password"));
         user.setPhone(resultSet.getString("phone"));
         user.setNationalID(resultSet.getString("nationalId"));
         user.setAppId(resultSet.getInt("app_id"));
@@ -426,14 +437,6 @@ public class UserService {
         try{
             user.setGroupId(resultSet.getInt("group_id"));
         }catch (Exception ignored){}
-
-        try{
-            user.setUsertype(Usertype.valueOf(resultSet.getString("usertype")));
-        }catch (Exception ignored){ }
-
-        try{
-            user.setAprovalLevel(resultSet.getInt("uproval_level"));
-        }catch (Exception ignored){ }
 
         return user;
     }

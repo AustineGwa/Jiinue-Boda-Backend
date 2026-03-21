@@ -2,6 +2,7 @@ package com.otblabs.jiinueboda.accounting.expenses;
 
 import com.otblabs.jiinueboda.accounting.expenses.models.CreateExpense;
 import com.otblabs.jiinueboda.accounting.expenses.models.PendingExpense;
+import com.otblabs.jiinueboda.auth.LoggedInUser;
 import com.otblabs.jiinueboda.users.UserService;
 import com.otblabs.jiinueboda.users.models.SystemUser;
 import com.otblabs.jiinueboda.users.models.Usertype;
@@ -87,18 +88,18 @@ public class ExpensesController {
     @PostMapping("/approve-new/{approvalStatus}")
     public ResponseEntity<Boolean> approvePendingExpenses(@RequestBody PendingExpense pendingExpense, @PathVariable boolean approvalStatus,Principal principal) {
 
-        SystemUser systemUser = userService.getByEmailOrPhone(principal.getName());
+        LoggedInUser loggedInUser = userService.getLoggedInUser(principal.getName());
 
-        if (systemUser.getUsertype() != Usertype.Admin) {
+        if (loggedInUser.getUsertype() != Usertype.Admin) {
             throw new RuntimeException("Operation not permitted for this user");
         }
 
-        if( systemUser.getAprovalLevel() == 0){
+        if( loggedInUser.getAprovalLevel() == 0){
             throw new RuntimeException("Operation not permitted for this user");
         }
 
         try {
-            return  ResponseEntity.ok(expensesService.approvePendingExpenses(pendingExpense,approvalStatus,systemUser.getId()));
+            return  ResponseEntity.ok(expensesService.approvePendingExpenses(pendingExpense,approvalStatus,loggedInUser.getId()));
         }catch (Exception exception){
             exception.printStackTrace();
             return ResponseEntity.unprocessableEntity().build();

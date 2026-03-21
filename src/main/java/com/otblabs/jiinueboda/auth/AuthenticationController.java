@@ -38,26 +38,26 @@ public class AuthenticationController {
         String sessionId = UUID.randomUUID().toString();
 
         try {
-            SystemUser systemUser = userService.getByEmailOrPhone(credentials.getUser());
 
-            if (systemUser == null) {
+            LoggedInUser loggedInUser = userService.getLoggedInUser(credentials.getUser());
+            if (loggedInUser == null) {
                 loginAuditService.saveAudit(request, credentials.getUser(),
                         0, "USER_NOT_FOUND", "User not found", sessionId);
                 return ResponseEntity.status(404)
                         .body(new LoginResponse<>("Error: user does not exist", null));
             }
 
-            if (!bCryptPasswordEncoder.matches(credentials.getPassword(), systemUser.getPassword())) {
+            if (!bCryptPasswordEncoder.matches(credentials.getPassword(), loggedInUser.getPassword())) {
                 loginAuditService.saveAudit(request, credentials.getUser(),
-                        systemUser.getId(), "WRONG_PASSWORD", "Wrong password", sessionId);
+                        loggedInUser.getId(), "WRONG_PASSWORD", "Wrong password", sessionId);
                 return ResponseEntity.status(401)
                         .body(new LoginResponse<>("Error: wrong email or password combination", null));
             }
 
             // Password OK — fire OTP
-            twoFactorService.generateAndSendOtp(credentials.getUser(), systemUser.getPhone());
+            twoFactorService.generateAndSendOtp(credentials.getUser(), loggedInUser.getPhone());
 
-            loginAuditService.saveAudit(request, credentials.getUser(),systemUser.getId(), "OTP_SENT", null, sessionId);
+            loginAuditService.saveAudit(request, credentials.getUser(),loggedInUser.getId(), "OTP_SENT", null, sessionId);
 
             return ResponseEntity.ok(
                     new LoginResponse<>("OTP sent to your registered phone number", null, true, sessionId)
@@ -76,9 +76,9 @@ public class AuthenticationController {
             HttpServletRequest request) {
 
         try {
-            SystemUser systemUser = userService.getByEmailOrPhone(otpRequest.getUserIdentifier());
+            LoggedInUser loggedInUser = userService.getLoggedInUser(otpRequest.getUserIdentifier());
 
-            if (systemUser == null) {
+            if (loggedInUser == null) {
                 return ResponseEntity.status(404)
                         .body(new LoginResponse<>("User not found", null));
             }
@@ -89,13 +89,13 @@ public class AuthenticationController {
             switch (result) {
                 case EXPIRED -> {
                     loginAuditService.saveAudit(request, otpRequest.getUserIdentifier(),
-                            systemUser.getId(), "OTP_EXPIRED", "OTP expired", otpRequest.getSessionId());
+                            loggedInUser.getId(), "OTP_EXPIRED", "OTP expired", otpRequest.getSessionId());
                     return ResponseEntity.status(401)
                             .body(new LoginResponse<>("OTP has expired, please login again", null));
                 }
                 case INVALID, NOT_FOUND -> {
                     loginAuditService.saveAudit(request, otpRequest.getUserIdentifier(),
-                            systemUser.getId(), "OTP_FAILED", "Invalid OTP", otpRequest.getSessionId());
+                            loggedInUser.getId(), "OTP_FAILED", "Invalid OTP", otpRequest.getSessionId());
                     return ResponseEntity.status(401)
                             .body(new LoginResponse<>("Invalid OTP code", null));
                 }
@@ -108,7 +108,7 @@ public class AuthenticationController {
 
                     loginAuditService.markSuccess(otpRequest.getSessionId(), token);
 
-                    return ResponseEntity.ok(new LoginResponse<>(token, systemUser));
+                    return ResponseEntity.ok(new LoginResponse<>(token, loggedInUser));
                 }
                 default -> { return ResponseEntity.internalServerError().build(); }
             }
