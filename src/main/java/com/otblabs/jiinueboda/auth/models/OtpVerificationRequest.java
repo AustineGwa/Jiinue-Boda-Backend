@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.auth;
+package com.otblabs.jiinueboda.auth.models;
 
 import lombok.Data;
 

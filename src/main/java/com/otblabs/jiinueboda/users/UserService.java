@@ -1,6 +1,7 @@
 package com.otblabs.jiinueboda.users;
 
-import com.otblabs.jiinueboda.auth.LoggedInUser;
+import com.otblabs.jiinueboda.auth.models.LoggedInUser;
+import com.otblabs.jiinueboda.auth.models.UserRoleManager;
 import com.otblabs.jiinueboda.loans.models.LoanPayeeDetail;
 import com.otblabs.jiinueboda.loans.models.UserLoanDetail;
 import com.otblabs.jiinueboda.sms.SmsService;

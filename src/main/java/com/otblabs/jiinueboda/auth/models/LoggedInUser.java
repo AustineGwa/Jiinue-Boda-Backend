@@ -1,4 +1,4 @@
-package com.otblabs.jiinueboda.auth;
+package com.otblabs.jiinueboda.auth.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.otblabs.jiinueboda.users.models.Usertype;

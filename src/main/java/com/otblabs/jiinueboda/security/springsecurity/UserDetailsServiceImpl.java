@@ -1,14 +1,13 @@
 package com.otblabs.jiinueboda.security.springsecurity;
 
 
-import com.otblabs.jiinueboda.auth.LoggedInUser;
+import com.otblabs.jiinueboda.auth.models.LoggedInUser;
 import com.otblabs.jiinueboda.investors.InvestmentManagementService;
 import com.otblabs.jiinueboda.investors.models.Investor;
 import com.otblabs.jiinueboda.patners.Partner;
 import com.otblabs.jiinueboda.patners.PartnersService;
 import com.otblabs.jiinueboda.users.UserService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import com.otblabs.jiinueboda.users.models.SystemUser;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

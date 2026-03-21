@@ -1,11 +1,13 @@
 package com.otblabs.jiinueboda.auth;
 
 import com.auth0.jwt.JWT;
+import com.otblabs.jiinueboda.auth.models.LoggedInUser;
+import com.otblabs.jiinueboda.auth.models.LoginResponse;
+import com.otblabs.jiinueboda.auth.models.OtpVerificationRequest;
 import com.otblabs.jiinueboda.exceptions.ExceptionsHandlerService;
 import com.otblabs.jiinueboda.security.Credentials;
 import com.otblabs.jiinueboda.security.SecurityConstants;
 import com.otblabs.jiinueboda.users.UserService;
-import com.otblabs.jiinueboda.users.models.SystemUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

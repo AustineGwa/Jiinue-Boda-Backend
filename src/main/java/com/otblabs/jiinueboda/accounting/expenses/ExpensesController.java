@@ -2,9 +2,8 @@ package com.otblabs.jiinueboda.accounting.expenses;
 
 import com.otblabs.jiinueboda.accounting.expenses.models.CreateExpense;
 import com.otblabs.jiinueboda.accounting.expenses.models.PendingExpense;
-import com.otblabs.jiinueboda.auth.LoggedInUser;
 import com.otblabs.jiinueboda.users.UserService;
-import com.otblabs.jiinueboda.users.models.UserRoleManager;
+import com.otblabs.jiinueboda.auth.models.UserRoleManager;
 import com.otblabs.jiinueboda.users.models.Usertype;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
